@@ -140,8 +140,10 @@ function nextPuzzle(){const L=LEVELS[level];puzzleIdx[level]=(puzzleIdx[level]+1
 function updateBest(){const pz=LEVELS[level].puzzles[puzzleIdx[level]];const key=pz.s+'-'+pz.e;const b=bestScores[level][key];document.getElementById('best-v').textContent=b||'—';}
 function setLevel(l){level=l;['easy','medium','hard'].forEach(x=>{document.getElementById('tab-'+x).className='ltab'+(x===l?' active-'+l:'');});loadPuzzle();}
 function loadPuzzle(){const L=LEVELS[level];const pz=L.puzzles[puzzleIdx[level]];chain=[pz.s];document.getElementById('start-badge').textContent=pz.s;document.getElementById('end-badge').textContent=pz.e;document.getElementById('par-v').textContent=pz.par;document.getElementById('steps-v').textContent=0;document.getElementById('wi').maxLength=L.wordLen;document.getElementById('wi').placeholder=L.wordLen+'-letter word...';document.getElementById('rule-txt').textContent='All '+L.wordLen+'-letter words · one letter changes per step';document.getElementById('hbar').textContent='Change one letter from '+pz.s;document.getElementById('hbar').className='hbar';document.getElementById('cur-hint').textContent=pz.s;document.getElementById('game-input').style.display='block';document.getElementById('win-area').style.display='none';updateBest();render();document.getElementById('wi').focus();}
+window.addEventListener('DOMContentLoaded', function() {
 document.getElementById('wi').addEventListener('keydown',e=>{if(e.key==='Enter')submit();});
 setLevel('easy');
+});
 </script>
 </body>
 </html>
