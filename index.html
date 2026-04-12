@@ -115,6 +115,17 @@
   footer { margin-top: auto; padding: 1.5rem; font-size: 12px; color: var(--text-hint); text-align: center; }
   #canvas-wrap { display: none; }
 
+  /* OPTIMAL PATH STYLES */
+  .optimal-section { margin-bottom: 1.25rem; }
+  .optimal-perfect { background: var(--green-bg); border: 1px solid var(--green-border); border-radius: var(--radius); padding: 10px 14px; font-size: 13px; color: var(--green-text); text-align: center; font-weight: 500; }
+  .optimal-path { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; }
+  .optimal-steps { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+  .optimal-steps strong { color: var(--text); }
+  .optimal-words { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+  .optimal-word { background: var(--green-bg); border-radius: var(--radius); padding: 4px 9px; font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--green-text); letter-spacing: 0.06em; }
+  .optimal-word.start-word { background: var(--amber-bg); color: var(--amber-text); }
+  .optimal-arr { color: var(--text-hint); font-size: 10px; }
+
   /* HINT STYLES */
   .hint-section { margin-top: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
   .hint-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: border-color 0.15s, color 0.15s; }
@@ -173,6 +184,8 @@
     <div class="stats-grid" id="stats-grid"></div>
     <div class="stats-section-title">by level</div>
     <div class="level-stats" id="level-stats"></div>
+    <div class="stats-section-title">optimal path</div>
+    <div class="optimal-section" id="optimal-section"></div>
     <div class="stats-section-title">your result card</div>
     <div class="result-card-wrap">
       <div class="result-card" id="result-card">
@@ -319,8 +332,7 @@ function useHint(){
     return;
   }
   hintsUsed++;
-  const baseSteps=chain.length-1;
-  document.getElementById('steps-v').textContent=baseSteps+hintsUsed;
+  document.getElementById('steps-v').textContent=(chain.length-1)+hintsUsed;
   const nextWord=path[1];
   const pos=cur.split('').findIndex((ch,i)=>ch!==nextWord[i]);
   const tier=Math.min(hintsUsed,3);
@@ -328,7 +340,7 @@ function useHint(){
   let msg='';
   if(tier===1){msg='Try changing the <strong>'+ordinal(pos+1)+' letter</strong>.';}
   else if(tier===2){msg='Next word: <strong>'+nextWord+'</strong>';}
-  else{const rest=path.slice(1).join(' → ');msg='Full path: <strong>'+rest+'</strong>';}
+  else{msg='Full path: <strong>'+path.slice(1).join(' → ')+'</strong>';}
   document.getElementById('hint-tier-label').textContent=tierLabels[tier];
   document.getElementById('hint-msg').innerHTML=msg;
   const bubble=document.getElementById('hint-bubble');
@@ -388,13 +400,32 @@ function showWinModal(steps,par,stats){
   else msg='Solved in '+steps+' steps (par was '+par+')';
   document.getElementById('win-modal-title').textContent='Chain complete!';
   document.getElementById('win-modal-msg').textContent=msg;
+
   const avg=stats.totalPar>0?Math.round((stats.totalSteps/stats.totalPar)*100)+'%':'—';
   const grid=document.getElementById('stats-grid');grid.innerHTML='';
   [{v:stats.wins,l:'puzzles solved'},{v:currentStreak.count,l:'current streak'},{v:currentStreak.best,l:'best streak'},{v:avg,l:'steps vs par'}].forEach(c=>{
     grid.innerHTML+='<div class="stat-card"><div class="sv">'+c.v+'</div><div class="sl">'+c.l+'</div></div>';
   });
+
   const ls=document.getElementById('level-stats');ls.innerHTML='';
   ['easy','medium','hard'].forEach(l=>{const v=stats[l]||0;ls.innerHTML+='<div class="level-stat-row"><span class="lname">'+l.charAt(0).toUpperCase()+l.slice(1)+'</span><span class="lval">'+v+' solved</span></div>';});
+
+  const optEl=document.getElementById('optimal-section');
+  const optPath=bfsSolve(currentPuzzle.s,currentPuzzle.e,LEVELS[level].words);
+  const playerSteps=chain.length-1;
+  if(optPath){
+    const optSteps=optPath.length-1;
+    if(playerSteps===optSteps&&hintsUsed===0){
+      optEl.innerHTML='<div class="optimal-perfect">You found the optimal path! 🎯</div>';
+    } else {
+      const wordsHtml=optPath.map((w,i)=>{
+        const cls=i===0?'optimal-word start-word':i===optPath.length-1?'optimal-word end-word':'optimal-word';
+        return (i>0?'<span class="optimal-arr">→</span>':'')+'<span class="'+cls+'">'+w+'</span>';
+      }).join('');
+      optEl.innerHTML='<div class="optimal-path"><div class="optimal-steps">Shortest solution: <strong>'+optSteps+' step'+(optSteps!==1?'s':'')+'</strong></div><div class="optimal-words">'+wordsHtml+'</div></div>';
+    }
+  } else { optEl.innerHTML=''; }
+
   const today=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
   document.getElementById('rc-date').textContent=today;
   document.getElementById('rc-puzzle').textContent=currentPuzzle.s+' → '+currentPuzzle.e;
