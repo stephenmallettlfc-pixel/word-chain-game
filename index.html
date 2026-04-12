@@ -115,6 +115,14 @@
   footer { margin-top: auto; padding: 1.5rem; font-size: 12px; color: var(--text-hint); text-align: center; }
   #canvas-wrap { display: none; }
 
+  /* PRACTICE MODE */
+  .practice-btn { padding: 6px 14px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; }
+  .practice-btn:hover { background: var(--bg); color: var(--text); }
+  .practice-banner { width: 100%; background: var(--blue-bg); border-bottom: 1px solid var(--blue-border); padding: 8px 1rem; text-align: center; font-size: 13px; color: var(--blue-text); font-weight: 500; display: none; }
+  .practice-banner.show { display: block; }
+  .new-puzzle-btn { margin-top: 1rem; width: 100%; padding: 11px; border-radius: var(--radius); border: 1px solid var(--blue-border); background: var(--blue-bg); color: var(--blue-text); font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; }
+  .new-puzzle-btn:hover { opacity: 0.85; }
+
   /* DIFFICULTY BADGE */
   .diff-badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px; margin-top: 8px; letter-spacing: 0.03em; }
   .diff-badge.d1 { background: var(--green-bg); color: var(--green-text); }
@@ -205,6 +213,7 @@
       </div>
     </div>
     <div id="canvas-wrap"><canvas id="share-canvas"></canvas></div>
+    <button class="new-puzzle-btn" id="win-practice-btn" style="display:none;margin-bottom:8px;" onclick="document.getElementById('win-overlay').classList.remove('open');startPractice()">New practice puzzle</button>
     <button class="save-btn" onclick="saveImage()">Save image to share</button>
     <button class="copy-btn" onclick="copyText()">Copy result as text</button>
     <div class="share-copied" id="share-copied"></div>
@@ -215,11 +224,13 @@
   <span class="logo">Word Chain</span>
   <span class="logo-sub">Daily puzzle</span>
   <div class="header-btns">
+    <button class="practice-btn" onclick="startPractice()">Practice</button>
     <button class="help-btn" onclick="openHelp()">How to play</button>
   </div>
 </header>
 
 <div class="streak-bar" id="streak-bar"></div>
+<div class="practice-banner" id="practice-banner">Practice mode — results don't count toward your streak &nbsp;·&nbsp; <button onclick="exitPractice()" style="background:none;border:none;color:var(--blue-text);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:underline;">exit</button></div>
 
 <div class="game">
   <div class="daily-badge" id="daily-badge">Loading today's puzzle...</div>
@@ -275,6 +286,7 @@
       <p id="done-msg">You have already completed today's puzzle!</p>
       <p class="next">Come back tomorrow for a new challenge.</p>
     </div>
+    <button class="new-puzzle-btn" id="done-new-btn" style="display:none" onclick="startPractice()">Try a practice puzzle</button>
   </div>
 </div>
 
@@ -299,12 +311,13 @@ function recordWin(lvl,steps,par){const s=loadStats();s.total=(s.total||0)+1;s.w
 function loadStreak(){try{const s=JSON.parse(localStorage.getItem('wc_streak')||'{}');return {count:s.count||0,last:s.last||'',best:s.best||0};}catch(e){return {count:0,last:'',best:0};}}
 function saveStreak(count,last,best){try{localStorage.setItem('wc_streak',JSON.stringify({count,last,best}));}catch(e){}}
 function updateStreak(){const today=todayStr();const s=loadStreak();const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);const yStr=yesterday.getFullYear()+'-'+(yesterday.getMonth()+1)+'-'+yesterday.getDate();let newCount=1;if(s.last===yStr)newCount=s.count+1;else if(s.last===today)newCount=s.count;const best=Math.max(newCount,s.best||0);saveStreak(newCount,today,best);return {count:newCount,best};}
-function showStreakBar(count){const bar=document.getElementById('streak-bar');if(count>=2){bar.textContent=count+' day streak — keep it going!';bar.classList.add('show');}}
+function showStreakBar(count){const bar=document.getElementById('streak-bar');if(count>=2){bar.textContent=count+' day streak — keep it going!';bar.classList.add('show');}else{bar.classList.remove('show');}}
 function checkAlreadyDone(lvl){try{return localStorage.getItem('wc_done_'+lvl+'_'+todayStr())==='1';}catch(e){return false;}}
 function markDone(lvl){try{localStorage.setItem('wc_done_'+lvl+'_'+todayStr(),'1');}catch(e){}}
 
 let level='easy',chain=[],currentPuzzle=null,currentStreak={count:0,best:0};
 let hintsUsed=0;
+let practiceMode=false;
 
 function ordinal(n){const s=['th','st','nd','rd'];const v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 
@@ -324,6 +337,63 @@ function bfsSolve(from,to,wordSet){
     }
   }
   return null;
+}
+
+function startPractice(){
+  practiceMode=true;
+  document.getElementById('practice-banner').classList.add('show');
+  document.getElementById('streak-bar').style.display='none';
+  loadPracticePuzzle();
+}
+
+function exitPractice(){
+  practiceMode=false;
+  document.getElementById('practice-banner').classList.remove('show');
+  const s=loadStreak();showStreakBar(s.count);
+  setLevel(level);
+}
+
+function generatePracticePuzzle(lvl){
+  const wordSet=LEVELS[lvl].words;
+  const words=Array.from(wordSet);
+  for(let attempt=0;attempt<80;attempt++){
+    const s=words[Math.floor(Math.random()*words.length)];
+    const e=words[Math.floor(Math.random()*words.length)];
+    if(s===e)continue;
+    const path=bfsSolve(s,e,wordSet);
+    if(path&&path.length>=3&&path.length<=7){
+      const par=path.length-1;
+      const d=par<=2?1:par<=4?2:3;
+      return {s,e,par,d};
+    }
+  }
+  return null;
+}
+
+function loadPracticePuzzle(){
+  const puzzle=generatePracticePuzzle(level);
+  if(!puzzle){alert("Couldn't generate a practice puzzle — try a different difficulty.");return;}
+  currentPuzzle=puzzle;chain=[puzzle.s];hintsUsed=0;
+  const L=LEVELS[level];
+  document.getElementById('daily-badge').textContent='Practice puzzle · '+level.charAt(0).toUpperCase()+level.slice(1);
+  document.getElementById('start-badge').textContent=puzzle.s;
+  document.getElementById('end-badge').textContent=puzzle.e;
+  const diffWrap=document.getElementById('diff-badge-wrap');
+  diffWrap.innerHTML=puzzle.d?'<span class="diff-badge d'+puzzle.d+'">'+(({1:'Straightforward',2:'Moderate',3:'Tricky'})[puzzle.d])+'</span>':'';
+  document.getElementById('par-v').textContent=puzzle.par;
+  document.getElementById('steps-v').textContent=0;
+  document.getElementById('best-v').textContent='—';
+  document.getElementById('wi').maxLength=L.wordLen;
+  document.getElementById('wi').placeholder=L.wordLen+'-letter word...';
+  document.getElementById('rule-txt').textContent='All '+L.wordLen+'-letter words · one letter changes per step';
+  document.getElementById('hbar').textContent='Change one letter from '+puzzle.s;
+  document.getElementById('hbar').className='hbar';
+  document.getElementById('cur-hint').textContent=puzzle.s;
+  document.getElementById('already-done').style.display='none';
+  document.getElementById('game-input').style.display='block';
+  document.getElementById('hint-bubble').classList.remove('visible');
+  document.getElementById('hint-cost').textContent='each hint adds +1 step';
+  render();document.getElementById('wi').focus();
 }
 
 function useHint(){
@@ -384,8 +454,10 @@ function submit(){
   document.getElementById('hint-bubble').classList.remove('visible');
   render();
   if(v===currentPuzzle.e){
-    const steps=chain.length-1+hintsUsed;markDone(level);currentStreak=updateStreak();
-    const stats=recordWin(level,steps,currentPuzzle.par);showWinModal(steps,currentPuzzle.par,stats);return;
+    const steps=chain.length-1+hintsUsed;
+    if(!practiceMode){markDone(level);currentStreak=updateStreak();}
+    const stats=recordWin(level,steps,currentPuzzle.par);
+    showWinModal(steps,currentPuzzle.par,stats);return;
   }
   document.getElementById('cur-hint').textContent=v;
   hbar.textContent='Good! From '+v+' — change one letter';hbar.className='hbar ok';inp.focus();
@@ -405,7 +477,7 @@ function showWinModal(steps,par,stats){
   if(steps<=par-2)msg='Brilliant! '+steps+' steps — way under par ('+par+')';
   else if(steps<=par)msg='Solved in '+steps+' steps — right on par!';
   else msg='Solved in '+steps+' steps (par was '+par+')';
-  document.getElementById('win-modal-title').textContent='Chain complete!';
+  document.getElementById('win-modal-title').textContent=practiceMode?'Practice complete!':'Chain complete!';
   document.getElementById('win-modal-msg').textContent=msg;
 
   const avg=stats.totalPar>0?Math.round((stats.totalSteps/stats.totalPar)*100)+'%':'—';
@@ -438,10 +510,11 @@ function showWinModal(steps,par,stats){
   document.getElementById('rc-puzzle').textContent=currentPuzzle.s+' → '+currentPuzzle.e;
   document.getElementById('rc-chain').textContent=chain.join(' → ');
   document.getElementById('rc-score').textContent=msg;
-  document.getElementById('rc-streak').textContent=currentStreak.count>=2?currentStreak.count+' day streak':'';
+  document.getElementById('rc-streak').textContent=!practiceMode&&currentStreak.count>=2?currentStreak.count+' day streak':'';
   document.getElementById('result-card').className='result-card '+level;
   document.getElementById('share-copied').textContent='';
   document.getElementById('win-overlay').classList.add('open');
+  document.getElementById('win-practice-btn').style.display=practiceMode?'block':'none';
 }
 
 function saveImage(){
@@ -456,16 +529,18 @@ function copyText(){
   const steps=chain.length-1+hintsUsed;const par=currentPuzzle.par;
   let rating='';if(steps<=par-2)rating='Brilliant!';else if(steps<=par)rating='Right on par!';else rating='Keep practising!';
   const today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-  const streakLine=currentStreak.count>=2?'\nStreak: '+currentStreak.count+' days':'';
+  const streakLine=!practiceMode&&currentStreak.count>=2?'\nStreak: '+currentStreak.count+' days':'';
   const hintLine=hintsUsed>0?'\nHints used: '+hintsUsed:'';
-  const text='Word Chain — '+today+'\n'+level.charAt(0).toUpperCase()+level.slice(1)+': '+currentPuzzle.s+' → '+currentPuzzle.e+'\nSolved in '+steps+' steps (par '+par+')'+hintLine+'\n'+chain.join(' → ')+'\n'+rating+streakLine+'\nPlay at wordchain-puzzle.com';
+  const practiceLabel=practiceMode?'\n(Practice mode)':'';
+  const text='Word Chain — '+today+'\n'+level.charAt(0).toUpperCase()+level.slice(1)+': '+currentPuzzle.s+' → '+currentPuzzle.e+'\nSolved in '+steps+' steps (par '+par+')'+hintLine+practiceLabel+'\n'+chain.join(' → ')+'\n'+rating+streakLine+'\nPlay at wordchain-puzzle.com';
   navigator.clipboard.writeText(text).then(()=>{document.getElementById('share-copied').textContent='Copied! Ready to paste and share.';}).catch(()=>{document.getElementById('share-copied').textContent='Copy failed — try manually selecting the text.';});
 }
 
 function closeWinOverlay(e){if(e.target===document.getElementById('win-overlay'))document.getElementById('win-overlay').classList.remove('open');}
 
 function setLevel(l){
-  level=l;['easy','medium','hard'].forEach(x=>{document.getElementById('tab-'+x).className='ltab'+(x===l?' active-'+l:'');});loadPuzzle();
+  level=l;['easy','medium','hard'].forEach(x=>{document.getElementById('tab-'+x).className='ltab'+(x===l?' active-'+l:'');});
+  if(practiceMode){loadPracticePuzzle();}else{loadPuzzle();}
 }
 
 function loadPuzzle(){
@@ -494,6 +569,9 @@ function loadPuzzle(){
   if(checkAlreadyDone(level)){
     document.getElementById('already-done').style.display='block';
     document.getElementById('done-msg').textContent='You have already completed today\'s '+level+' puzzle!';
+    document.getElementById('done-new-btn').style.display='block';
+  } else {
+    document.getElementById('done-new-btn').style.display='none';
   }
   render();document.getElementById('wi').focus();
 }
