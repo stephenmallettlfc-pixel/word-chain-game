@@ -56,17 +56,29 @@
   .level-stat-row .lname { width: 60px; font-weight: 500; color: var(--text-muted); }
   .level-stat-row .lval { color: var(--text); font-family: 'DM Mono', monospace; }
   .result-card-wrap { margin-bottom: 1rem; }
-  .result-card { border-radius: var(--radius-lg); padding: 1.5rem; text-align: center; }
-  .result-card.easy { background: linear-gradient(135deg, #fef3e2, #fde68a); }
-  .result-card.medium { background: linear-gradient(135deg, #edf4ff, #bfdbfe); }
-  .result-card.hard { background: linear-gradient(135deg, #fdeef5, #fbcfe8); }
-  .rc-site { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.6; margin-bottom: 8px; }
-  .rc-title { font-family: 'DM Serif Display', serif; font-size: 24px; margin-bottom: 4px; }
-  .rc-date { font-size: 12px; opacity: 0.7; margin-bottom: 12px; }
-  .rc-puzzle { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; margin-bottom: 8px; letter-spacing: 0.05em; }
-  .rc-chain { font-family: 'DM Mono', monospace; font-size: 12px; opacity: 0.8; margin-bottom: 12px; line-height: 1.8; }
-  .rc-score { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
-  .rc-streak { font-size: 12px; opacity: 0.7; }
+  .result-card { border-radius: var(--radius-lg); padding: 1.5rem; text-align: center; font-family: 'DM Sans', sans-serif; }
+  .result-card.easy { background: linear-gradient(145deg, #fef3e2 0%, #fde68a 100%); }
+  .result-card.medium { background: linear-gradient(145deg, #edf4ff 0%, #bfdbfe 100%); }
+  .result-card.hard { background: linear-gradient(145deg, #fdeef5 0%, #fbcfe8 100%); }
+  .rc-site { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.5; margin-bottom: 10px; }
+  .rc-title { font-family: 'DM Serif Display', serif; font-size: 26px; margin-bottom: 2px; letter-spacing: -0.3px; }
+  .rc-date { font-size: 11px; opacity: 0.6; margin-bottom: 14px; }
+  .rc-pair { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 16px; }
+  .rc-pair-word { font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 500; padding: 8px 16px; border-radius: 8px; letter-spacing: 0.08em; background: rgba(255,255,255,0.55); }
+  .rc-pair-arrow { font-size: 16px; opacity: 0.5; }
+  .rc-chain-visual { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px; margin-bottom: 16px; }
+  .rc-chain-word { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; padding: 4px 9px; border-radius: 6px; background: rgba(255,255,255,0.45); letter-spacing: 0.05em; }
+  .rc-chain-word.rc-chain-start { background: rgba(255,255,255,0.75); }
+  .rc-chain-word.rc-chain-end { background: rgba(255,255,255,0.75); }
+  .rc-chain-arrow { font-size: 10px; opacity: 0.45; }
+  .rc-stats-row { display: flex; justify-content: center; gap: 24px; margin-bottom: 8px; }
+  .rc-stat-item { text-align: center; }
+  .rc-stat-val { font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 500; line-height: 1; }
+  .rc-stat-lbl { font-size: 10px; opacity: 0.6; letter-spacing: 0.05em; margin-top: 2px; }
+  .rc-rating { font-size: 20px; margin: 6px 0 4px; letter-spacing: 3px; }
+  .rc-score { font-size: 12px; opacity: 0.7; margin-bottom: 6px; }
+  .rc-streak { font-size: 12px; opacity: 0.6; }
+  .rc-divider { width: 40px; height: 1px; background: rgba(0,0,0,0.12); margin: 12px auto; }
   .save-btn { width: 100%; padding: 11px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; margin-bottom: 8px; }
   .save-btn:hover { background: var(--bg); }
   .copy-btn { width: 100%; padding: 11px; border-radius: var(--radius); border: 1px solid var(--green-border); background: var(--green-bg); color: var(--green-text); font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; margin-bottom: 8px; }
@@ -206,8 +218,18 @@
         <div class="rc-site">wordchain-puzzle.com</div>
         <div class="rc-title">Word Chain</div>
         <div class="rc-date" id="rc-date"></div>
-        <div class="rc-puzzle" id="rc-puzzle"></div>
-        <div class="rc-chain" id="rc-chain"></div>
+        <div class="rc-pair">
+          <span class="rc-pair-word" id="rc-start"></span>
+          <span class="rc-pair-arrow">→</span>
+          <span class="rc-pair-word" id="rc-end"></span>
+        </div>
+        <div class="rc-chain-visual" id="rc-chain-visual"></div>
+        <div class="rc-divider"></div>
+        <div class="rc-stats-row">
+          <div class="rc-stat-item"><div class="rc-stat-val" id="rc-steps-val">—</div><div class="rc-stat-lbl">steps</div></div>
+          <div class="rc-stat-item"><div class="rc-stat-val" id="rc-par-val">—</div><div class="rc-stat-lbl">par</div></div>
+        </div>
+        <div class="rc-rating" id="rc-rating"></div>
         <div class="rc-score" id="rc-score"></div>
         <div class="rc-streak" id="rc-streak"></div>
       </div>
@@ -316,8 +338,7 @@ function checkAlreadyDone(lvl){try{return localStorage.getItem('wc_done_'+lvl+'_
 function markDone(lvl){try{localStorage.setItem('wc_done_'+lvl+'_'+todayStr(),'1');}catch(e){}}
 
 let level='easy',chain=[],currentPuzzle=null,currentStreak={count:0,best:0};
-let hintsUsed=0;
-let practiceMode=false;
+let hintsUsed=0,practiceMode=false;
 
 function ordinal(n){const s=['th','st','nd','rd'];const v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 
@@ -354,16 +375,14 @@ function exitPractice(){
 }
 
 function generatePracticePuzzle(lvl){
-  const wordSet=LEVELS[lvl].words;
-  const words=Array.from(wordSet);
+  const wordSet=LEVELS[lvl].words;const words=Array.from(wordSet);
   for(let attempt=0;attempt<80;attempt++){
     const s=words[Math.floor(Math.random()*words.length)];
     const e=words[Math.floor(Math.random()*words.length)];
     if(s===e)continue;
     const path=bfsSolve(s,e,wordSet);
     if(path&&path.length>=3&&path.length<=7){
-      const par=path.length-1;
-      const d=par<=2?1:par<=4?2:3;
+      const par=path.length-1;const d=par<=2?1:par<=4?2:3;
       return {s,e,par,d};
     }
   }
@@ -378,8 +397,8 @@ function loadPracticePuzzle(){
   document.getElementById('daily-badge').textContent='Practice puzzle · '+level.charAt(0).toUpperCase()+level.slice(1);
   document.getElementById('start-badge').textContent=puzzle.s;
   document.getElementById('end-badge').textContent=puzzle.e;
-  const diffWrap=document.getElementById('diff-badge-wrap');
-  diffWrap.innerHTML=puzzle.d?'<span class="diff-badge d'+puzzle.d+'">'+(({1:'Straightforward',2:'Moderate',3:'Tricky'})[puzzle.d])+'</span>':'';
+  const dw=document.getElementById('diff-badge-wrap');
+  dw.innerHTML=puzzle.d?'<span class="diff-badge d'+puzzle.d+'">'+({1:'Straightforward',2:'Moderate',3:'Tricky'})[puzzle.d]+'</span>':'';
   document.getElementById('par-v').textContent=puzzle.par;
   document.getElementById('steps-v').textContent=0;
   document.getElementById('best-v').textContent='—';
@@ -398,26 +417,23 @@ function loadPracticePuzzle(){
 
 function useHint(){
   if(!currentPuzzle||!chain.length)return;
-  const cur=chain[chain.length-1].toUpperCase();
-  const end=currentPuzzle.e.toUpperCase();
+  const cur=chain[chain.length-1].toUpperCase();const end=currentPuzzle.e.toUpperCase();
   if(cur===end)return;
   const path=bfsSolve(cur,end,LEVELS[level].words);
   if(!path||path.length<2){
-    document.getElementById('hint-msg').innerHTML='No path found from here — try undoing a step.';
+    document.getElementById('hint-msg').innerHTML='No path found — try undoing a step.';
     document.getElementById('hint-tier-label').textContent='';
-    document.getElementById('hint-bubble').classList.add('visible');
-    return;
+    document.getElementById('hint-bubble').classList.add('visible');return;
   }
   hintsUsed++;
   document.getElementById('steps-v').textContent=(chain.length-1)+hintsUsed;
-  const nextWord=path[1];
-  const pos=cur.split('').findIndex((ch,i)=>ch!==nextWord[i]);
+  const nextWord=path[1];const pos=cur.split('').findIndex((ch,i)=>ch!==nextWord[i]);
   const tier=Math.min(hintsUsed,3);
   const tierLabels=['','Hint — position','Hint — word','Hint — full path'];
   let msg='';
-  if(tier===1){msg='Try changing the <strong>'+ordinal(pos+1)+' letter</strong>.';}
-  else if(tier===2){msg='Next word: <strong>'+nextWord+'</strong>';}
-  else{msg='Full path: <strong>'+path.slice(1).join(' → ')+'</strong>';}
+  if(tier===1)msg='Try changing the <strong>'+ordinal(pos+1)+' letter</strong>.';
+  else if(tier===2)msg='Next word: <strong>'+nextWord+'</strong>';
+  else msg='Full path: <strong>'+path.slice(1).join(' → ')+'</strong>';
   document.getElementById('hint-tier-label').textContent=tierLabels[tier];
   document.getElementById('hint-msg').innerHTML=msg;
   const bubble=document.getElementById('hint-bubble');
@@ -507,11 +523,27 @@ function showWinModal(steps,par,stats){
 
   const today=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
   document.getElementById('rc-date').textContent=today;
-  document.getElementById('rc-puzzle').textContent=currentPuzzle.s+' → '+currentPuzzle.e;
-  document.getElementById('rc-chain').textContent=chain.join(' → ');
+  document.getElementById('rc-start').textContent=currentPuzzle.s;
+  document.getElementById('rc-end').textContent=currentPuzzle.e;
+  const chainVisual=document.getElementById('rc-chain-visual');
+  chainVisual.innerHTML=chain.map((w,i)=>{
+    const cls=i===0?'rc-chain-word rc-chain-start':i===chain.length-1?'rc-chain-word rc-chain-end':'rc-chain-word';
+    const arrow=i>0?'<span class="rc-chain-arrow">→</span>':'';
+    return arrow+'<span class="'+cls+'">'+w+'</span>';
+  }).join('');
+  const totalSteps=chain.length-1+hintsUsed;
+  document.getElementById('rc-steps-val').textContent=totalSteps;
+  document.getElementById('rc-par-val').textContent=par;
+  let rating='';
+  if(totalSteps<=par-2)rating='★★★';
+  else if(totalSteps<=par)rating='★★☆';
+  else if(totalSteps<=par+2)rating='★☆☆';
+  else rating='☆☆☆';
+  document.getElementById('rc-rating').textContent=rating;
   document.getElementById('rc-score').textContent=msg;
-  document.getElementById('rc-streak').textContent=!practiceMode&&currentStreak.count>=2?currentStreak.count+' day streak':'';
+  document.getElementById('rc-streak').textContent=!practiceMode&&currentStreak.count>=2?'🔥 '+currentStreak.count+' day streak':'';
   document.getElementById('result-card').className='result-card '+level;
+
   document.getElementById('share-copied').textContent='';
   document.getElementById('win-overlay').classList.add('open');
   document.getElementById('win-practice-btn').style.display=practiceMode?'block':'none';
@@ -527,12 +559,11 @@ function saveImage(){
 
 function copyText(){
   const steps=chain.length-1+hintsUsed;const par=currentPuzzle.par;
-  let rating='';if(steps<=par-2)rating='Brilliant!';else if(steps<=par)rating='Right on par!';else rating='Keep practising!';
+  let rating='';if(steps<=par-2)rating='★★★ Brilliant!';else if(steps<=par)rating='★★☆ Right on par!';else if(steps<=par+2)rating='★☆☆ Keep practising!';else rating='☆☆☆ Keep practising!';
   const today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-  const streakLine=!practiceMode&&currentStreak.count>=2?'\nStreak: '+currentStreak.count+' days':'';
-  const hintLine=hintsUsed>0?'\nHints used: '+hintsUsed:'';
-  const practiceLabel=practiceMode?'\n(Practice mode)':'';
-  const text='Word Chain — '+today+'\n'+level.charAt(0).toUpperCase()+level.slice(1)+': '+currentPuzzle.s+' → '+currentPuzzle.e+'\nSolved in '+steps+' steps (par '+par+')'+hintLine+practiceLabel+'\n'+chain.join(' → ')+'\n'+rating+streakLine+'\nPlay at wordchain-puzzle.com';
+  const streakLine=!practiceMode&&currentStreak.count>=2?'\n🔥 '+currentStreak.count+' day streak':'';
+  const hintLine=hintsUsed>0?'\nHints: '+hintsUsed:'';
+  const text='Word Chain — '+today+'\n'+level.charAt(0).toUpperCase()+level.slice(1)+': '+currentPuzzle.s+' → '+currentPuzzle.e+'\n'+chain.join(' → ')+'\n'+steps+' steps · par '+par+hintLine+'\n'+rating+streakLine+'\nwordchain-puzzle.com';
   navigator.clipboard.writeText(text).then(()=>{document.getElementById('share-copied').textContent='Copied! Ready to paste and share.';}).catch(()=>{document.getElementById('share-copied').textContent='Copy failed — try manually selecting the text.';});
 }
 
@@ -550,9 +581,9 @@ function loadPuzzle(){
   document.getElementById('daily-badge').textContent=today+' — '+level.charAt(0).toUpperCase()+level.slice(1)+' puzzle';
   document.getElementById('start-badge').textContent=currentPuzzle.s;
   document.getElementById('end-badge').textContent=currentPuzzle.e;
-  const diffWrap=document.getElementById('diff-badge-wrap');
-  if(currentPuzzle.d){const labels={1:'Straightforward',2:'Moderate',3:'Tricky'};diffWrap.innerHTML='<span class="diff-badge d'+currentPuzzle.d+'">'+labels[currentPuzzle.d]+'</span>';}
-  else{diffWrap.innerHTML='';}
+  const dw=document.getElementById('diff-badge-wrap');
+  if(currentPuzzle.d){const labels={1:'Straightforward',2:'Moderate',3:'Tricky'};dw.innerHTML='<span class="diff-badge d'+currentPuzzle.d+'">'+labels[currentPuzzle.d]+'</span>';}
+  else{dw.innerHTML='';}
   document.getElementById('par-v').textContent=currentPuzzle.par;
   document.getElementById('steps-v').textContent=0;
   document.getElementById('best-v').textContent='—';
@@ -570,9 +601,7 @@ function loadPuzzle(){
     document.getElementById('already-done').style.display='block';
     document.getElementById('done-msg').textContent='You have already completed today\'s '+level+' puzzle!';
     document.getElementById('done-new-btn').style.display='block';
-  } else {
-    document.getElementById('done-new-btn').style.display='none';
-  }
+  } else {document.getElementById('done-new-btn').style.display='none';}
   render();document.getElementById('wi').focus();
 }
 
