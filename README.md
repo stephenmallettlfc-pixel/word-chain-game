@@ -1,3 +1,341 @@
+/**
+ * Word Chain — Hint System
+ * ========================
+ * Drop this file into your project and call initHints() after your puzzle loads.
+ *
+ * INTEGRATION STEPS:
+ * 1. Import/include this file in your main JS bundle.
+ * 2. Call: initHints({ start, end, wordList, getCurrentChain, onHintUsed })
+ *    - start:           string  — start word (e.g. "CAT")
+ *    - end:             string  — target word (e.g. "DOG")
+ *    - wordList:        Set     — your full valid word set (same one used for validation)
+ *    - getCurrentChain: fn      — returns the player's current word chain array e.g. ["CAT","COT"]
+ *    - onHintUsed:      fn(n)   — called with total hints used; use to add penalty steps to score
+ * 3. Call: renderHintButton(containerEl) to inject the hint button into the DOM.
+ * 4. Call: resetHints() when a new puzzle starts.
+ *
+ * HINT TIERS (each costs +1 step penalty):
+ *   Tier 1 — Reveals which letter position changes next (e.g. "Change the 2nd letter")
+ *   Tier 2 — Reveals the actual next word on the optimal path
+ *   Tier 3 — Shows the full remaining optimal path
+ */
+
+// ─── BFS Solver ────────────────────────────────────────────────────────────────
+
+/**
+ * Find the shortest path from `start` to `end` using BFS.
+ * Returns an array of words including start and end, or null if no path exists.
+ */
+function bfsSolve(start, end, wordList) {
+  if (start === end) return [start];
+
+  const queue = [[start]];
+  const visited = new Set([start]);
+
+  while (queue.length > 0) {
+    const path = queue.shift();
+    const current = path[path.length - 1];
+
+    const neighbours = getNeighbours(current, wordList);
+    for (const neighbour of neighbours) {
+      if (neighbour === end) return [...path, neighbour];
+      if (!visited.has(neighbour)) {
+        visited.add(neighbour);
+        queue.push([...path, neighbour]);
+      }
+    }
+  }
+
+  return null; // no path found
+}
+
+/**
+ * Get all valid one-letter neighbours of `word` from `wordList`.
+ */
+function getNeighbours(word, wordList) {
+  const results = [];
+  const letters = 'abcdefghijklmnopqrstuvwxyz';
+  const w = word.toLowerCase();
+
+  for (let i = 0; i < w.length; i++) {
+    for (const letter of letters) {
+      if (letter === w[i]) continue;
+      const candidate = w.slice(0, i) + letter + w.slice(i + 1);
+      if (wordList.has(candidate)) results.push(candidate);
+    }
+  }
+
+  return results;
+}
+
+// ─── Hint State ────────────────────────────────────────────────────────────────
+
+let _config = null;
+let _hintsUsed = 0;
+let _optimalPath = null; // full BFS solution from start→end
+let _solverCache = {}; // cache partial paths from any word→end
+
+/**
+ * Initialise (or re-initialise) the hint system for a new puzzle.
+ */
+function initHints({ start, end, wordList, getCurrentChain, onHintUsed }) {
+  _config = { start, end: end.toLowerCase(), wordList, getCurrentChain, onHintUsed };
+  _hintsUsed = 0;
+  _solverCache = {};
+
+  // Kick off BFS in the background so first hint is fast
+  setTimeout(() => {
+    _optimalPath = bfsSolve(start.toLowerCase(), end.toLowerCase(), wordList);
+  }, 0);
+}
+
+/**
+ * Reset hint counter (call between puzzles).
+ */
+function resetHints() {
+  _hintsUsed = 0;
+  _solverCache = {};
+  _optimalPath = null;
+}
+
+// ─── Hint Logic ────────────────────────────────────────────────────────────────
+
+/**
+ * Get the next hint. Returns a hint object:
+ * {
+ *   tier: 1 | 2 | 3,
+ *   message: string,         // human-readable hint text
+ *   nextWord: string | null, // the actual next word (tier 2+)
+ *   remainingPath: string[]  // full remaining path (tier 3)
+ * }
+ */
+function getNextHint() {
+  if (!_config) throw new Error('initHints() must be called first');
+
+  const { end, wordList, getCurrentChain } = _config;
+  const chain = getCurrentChain();
+  const currentWord = chain[chain.length - 1].toLowerCase();
+
+  // Find the optimal path from current word to end
+  const cacheKey = currentWord;
+  if (!_solverCache[cacheKey]) {
+    _solverCache[cacheKey] = bfsSolve(currentWord, end, wordList);
+  }
+  const pathFromHere = _solverCache[cacheKey];
+
+  if (!pathFromHere || pathFromHere.length < 2) {
+    return {
+      tier: 0,
+      message: "You're already at the target!",
+      nextWord: null,
+      remainingPath: [],
+    };
+  }
+
+  const nextWord = pathFromHere[1]; // optimal next step
+  const tier = Math.min(_hintsUsed + 1, 3);
+  _hintsUsed++;
+  if (_config.onHintUsed) _config.onHintUsed(_hintsUsed);
+
+  // Find which position changes
+  const changedPos = findChangedPosition(currentWord, nextWord);
+  const posLabel = ordinal(changedPos + 1);
+
+  let message;
+  switch (tier) {
+    case 1:
+      message = `Try changing the <strong>${posLabel} letter</strong>.`;
+      break;
+    case 2:
+      message = `Next word: <strong>${nextWord.toUpperCase()}</strong>`;
+      break;
+    case 3: {
+      const rest = pathFromHere.slice(1).map(w => w.toUpperCase()).join(' → ');
+      message = `Remaining path: <strong>${rest}</strong>`;
+      break;
+    }
+    default:
+      message = `Next word: <strong>${nextWord.toUpperCase()}</strong>`;
+  }
+
+  return {
+    tier,
+    message,
+    nextWord,
+    remainingPath: pathFromHere.slice(1),
+  };
+}
+
+function findChangedPosition(a, b) {
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return i;
+  }
+  return 0;
+}
+
+function ordinal(n) {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+// ─── UI ────────────────────────────────────────────────────────────────────────
+
+/**
+ * Inject the hint button + tooltip into a container element.
+ * Styling uses CSS custom properties so it inherits your game's theme.
+ *
+ * @param {HTMLElement} containerEl — element to append the hint UI into
+ */
+function renderHintButton(containerEl) {
+  // Inject styles once
+  if (!document.getElementById('wc-hint-styles')) {
+    const style = document.createElement('style');
+    style.id = 'wc-hint-styles';
+    style.textContent = `
+      .wc-hint-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .wc-hint-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 18px;
+        border: 1.5px solid var(--color-border, #d1d5db);
+        border-radius: 999px;
+        background: var(--color-surface, #fff);
+        color: var(--color-text-muted, #6b7280);
+        font-family: inherit;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: border-color 0.15s, color 0.15s, background 0.15s;
+        user-select: none;
+      }
+
+      .wc-hint-btn:hover {
+        border-color: var(--color-accent, #f59e0b);
+        color: var(--color-accent, #f59e0b);
+      }
+
+      .wc-hint-btn:active {
+        transform: scale(0.97);
+      }
+
+      .wc-hint-btn svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+
+      .wc-hint-penalty {
+        font-size: 0.75rem;
+        color: var(--color-text-muted, #9ca3af);
+      }
+
+      .wc-hint-penalty strong {
+        color: var(--color-accent, #f59e0b);
+      }
+
+      .wc-hint-bubble {
+        display: none;
+        padding: 10px 16px;
+        background: var(--color-surface-alt, #fef9ec);
+        border: 1.5px solid var(--color-accent, #f59e0b);
+        border-radius: 10px;
+        font-size: 0.9rem;
+        color: var(--color-text, #374151);
+        text-align: center;
+        max-width: 280px;
+        animation: wc-hint-pop 0.2s ease;
+      }
+
+      .wc-hint-bubble.visible {
+        display: block;
+      }
+
+      .wc-hint-tier-badge {
+        display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-accent, #f59e0b);
+        margin-bottom: 3px;
+      }
+
+      @keyframes wc-hint-pop {
+        from { opacity: 0; transform: translateY(-4px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  const wrap = document.createElement('div');
+  wrap.className = 'wc-hint-wrap';
+  wrap.innerHTML = `
+    <button class="wc-hint-btn" id="wc-hint-btn" aria-label="Get a hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+        <circle cx="12" cy="17" r=".5" fill="currentColor"/>
+      </svg>
+      Hint
+    </button>
+    <span class="wc-hint-penalty" id="wc-hint-penalty" style="display:none">
+      +<strong><span id="wc-hint-count">0</span></strong> step penalty
+    </span>
+    <div class="wc-hint-bubble" id="wc-hint-bubble">
+      <span class="wc-hint-tier-badge" id="wc-hint-tier"></span>
+      <div id="wc-hint-text"></div>
+    </div>
+  `;
+
+  containerEl.appendChild(wrap);
+
+  document.getElementById('wc-hint-btn').addEventListener('click', () => {
+    const hint = getNextHint();
+    const bubble = document.getElementById('wc-hint-bubble');
+    const tierBadge = document.getElementById('wc-hint-tier');
+    const hintText = document.getElementById('wc-hint-text');
+    const penaltyEl = document.getElementById('wc-hint-penalty');
+    const countEl = document.getElementById('wc-hint-count');
+
+    const tierLabels = { 1: 'Hint — Position', 2: 'Hint — Word', 3: 'Hint — Full Path' };
+    tierBadge.textContent = tierLabels[hint.tier] || 'Hint';
+    hintText.innerHTML = hint.message;
+
+    bubble.classList.add('visible');
+    // re-trigger animation
+    bubble.style.animation = 'none';
+    bubble.offsetHeight; // reflow
+    bubble.style.animation = '';
+
+    countEl.textContent = _hintsUsed;
+    penaltyEl.style.display = 'block';
+  });
+}
+
+// ─── Exports ───────────────────────────────────────────────────────────────────
+
+// If using ES modules:
+// export { initHints, resetHints, renderHintButton, getNextHint, bfsSolve };
+
+// If using CommonJS / bundler:
+if (typeof module !== 'undefined') {
+  module.exports = { initHints, resetHints, renderHintButton, getNextHint, bfsSolve };
+}
+
+// If loaded as a plain script tag, expose on window:
+if (typeof window !== 'undefined') {
+  window.WordChainHints = { initHints, resetHints, renderHintButton, getNextHint, bfsSolve };
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
