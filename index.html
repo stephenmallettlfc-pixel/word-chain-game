@@ -127,13 +127,31 @@
   footer { margin-top: auto; padding: 1.5rem; font-size: 12px; color: var(--text-hint); text-align: center; }
   #canvas-wrap { display: none; }
 
-  /* PRACTICE MODE */
   .practice-btn { padding: 6px 14px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; }
   .practice-btn:hover { background: var(--bg); color: var(--text); }
   .practice-banner { width: 100%; background: var(--blue-bg); border-bottom: 1px solid var(--blue-border); padding: 8px 1rem; text-align: center; font-size: 13px; color: var(--blue-text); font-weight: 500; display: none; }
   .practice-banner.show { display: block; }
   .new-puzzle-btn { margin-top: 1rem; width: 100%; padding: 11px; border-radius: var(--radius); border: 1px solid var(--blue-border); background: var(--blue-bg); color: var(--blue-text); font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; }
   .new-puzzle-btn:hover { opacity: 0.85; }
+
+  /* FOR TEACHERS SECTION */
+  .teachers-section { width: 100%; max-width: 480px; padding: 0 1rem 2rem; margin: 0 auto; }
+  .teachers-card { background: var(--surface); border: 1px solid var(--green-border); border-radius: var(--radius-lg); padding: 1.5rem; }
+  .teachers-header { display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem; }
+  .teachers-icon { font-size: 22px; }
+  .teachers-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); }
+  .teachers-intro { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.25rem; }
+  .teachers-benefits { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.25rem; }
+  .teachers-benefit { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .tb-icon { color: var(--green-text); font-size: 14px; margin-top: 2px; flex-shrink: 0; font-weight: 700; }
+  .teachers-curriculum { background: var(--blue-bg); border: 1px solid var(--blue-border); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 1.25rem; }
+  .teachers-curriculum p { font-size: 12px; color: var(--blue-text); line-height: 1.6; }
+  .teachers-curriculum strong { font-weight: 500; }
+  .teachers-copy-btn { width: 100%; padding: 11px; border-radius: var(--radius); border: 1px solid var(--green-border); background: var(--green-bg); color: var(--green-text); font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; }
+  .teachers-copy-btn:hover { opacity: 0.9; }
+  .teachers-copied { font-size: 12px; color: var(--green-text); text-align: center; min-height: 18px; margin-top: 6px; }
+  .for-teachers-btn { padding: 6px 14px; border-radius: var(--radius); border: 1px solid var(--green-border); background: var(--green-bg); color: var(--green-text); font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; font-weight: 500; }
+  .for-teachers-btn:hover { opacity: 0.85; }
 
   /* DIFFICULTY BADGE */
   .diff-badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px; margin-top: 8px; letter-spacing: 0.03em; }
@@ -246,6 +264,7 @@
   <span class="logo">Word Chain</span>
   <span class="logo-sub">Daily puzzle</span>
   <div class="header-btns">
+    <button class="for-teachers-btn" onclick="document.getElementById('teachers-section').scrollIntoView({behavior:'smooth'})">For Teachers</button>
     <button class="practice-btn" onclick="startPractice()">Practice</button>
     <button class="help-btn" onclick="openHelp()">How to play</button>
   </div>
@@ -311,6 +330,29 @@
     <button class="new-puzzle-btn" id="done-new-btn" style="display:none" onclick="startPractice()">Try a practice puzzle</button>
   </div>
 </div>
+
+<section class="teachers-section" id="teachers-section">
+  <div class="teachers-card">
+    <div class="teachers-header">
+      <span class="teachers-icon">🎓</span>
+      <span class="teachers-title">For Teachers</span>
+    </div>
+    <p class="teachers-intro">Word Chain is used in classrooms as a fun, effective vocabulary and spelling activity. Students love the competitive element of finding the shortest path — and they don't realise they're doing literacy work.</p>
+    <div class="teachers-benefits">
+      <div class="teachers-benefit"><span class="tb-icon">✓</span><span>Free, no login or app download required — just share a link</span></div>
+      <div class="teachers-benefit"><span class="tb-icon">✓</span><span>Works on any device — school iPads, Chromebooks, laptops and phones</span></div>
+      <div class="teachers-benefit"><span class="tb-icon">✓</span><span>Three difficulty levels suit mixed abilities — 3, 4 and 5-letter words</span></div>
+      <div class="teachers-benefit"><span class="tb-icon">✓</span><span>Practice mode gives unlimited puzzles beyond the daily one — ideal for longer sessions</span></div>
+      <div class="teachers-benefit"><span class="tb-icon">✓</span><span>After completing, players see the optimal shortest solution — great for class discussion</span></div>
+      <div class="teachers-benefit"><span class="tb-icon">✓</span><span>Daily streak encourages students to return each day</span></div>
+    </div>
+    <div class="teachers-curriculum">
+      <p><strong>Curriculum links</strong> — Supports KS2 English: vocabulary development, spelling patterns, and word recognition. Encourages logical thinking and problem solving. Suitable for Years 4–6 as a starter activity, early finisher task, or homework challenge.</p>
+    </div>
+    <button class="teachers-copy-btn" onclick="copyTeacherLink()">📋 Copy classroom link to share</button>
+    <div class="teachers-copied" id="teachers-copied"></div>
+  </div>
+</section>
 
 <footer>Word Chain &mdash; a daily word puzzle &mdash; wordchain-puzzle.com</footer>
 
@@ -543,7 +585,6 @@ function showWinModal(steps,par,stats){
   document.getElementById('rc-score').textContent=msg;
   document.getElementById('rc-streak').textContent=!practiceMode&&currentStreak.count>=2?'🔥 '+currentStreak.count+' day streak':'';
   document.getElementById('result-card').className='result-card '+level;
-
   document.getElementById('share-copied').textContent='';
   document.getElementById('win-overlay').classList.add('open');
   document.getElementById('win-practice-btn').style.display=practiceMode?'block':'none';
@@ -565,6 +606,16 @@ function copyText(){
   const hintLine=hintsUsed>0?'\nHints: '+hintsUsed:'';
   const text='Word Chain — '+today+'\n'+level.charAt(0).toUpperCase()+level.slice(1)+': '+currentPuzzle.s+' → '+currentPuzzle.e+'\n'+chain.join(' → ')+'\n'+steps+' steps · par '+par+hintLine+'\n'+rating+streakLine+'\nwordchain-puzzle.com';
   navigator.clipboard.writeText(text).then(()=>{document.getElementById('share-copied').textContent='Copied! Ready to paste and share.';}).catch(()=>{document.getElementById('share-copied').textContent='Copy failed — try manually selecting the text.';});
+}
+
+function copyTeacherLink(){
+  const el=document.getElementById('teachers-copied');
+  const text='Word Chain — free daily word ladder puzzle for the classroom\nwordchain-puzzle.com\n\nStudents change one letter at a time to connect two words. Three difficulty levels, works on any device, no login needed. Great for vocabulary and spelling — Years 4–6.';
+  navigator.clipboard.writeText(text).then(()=>{
+    if(el)el.textContent='Copied! Ready to paste into an email or message.';
+  }).catch(()=>{
+    if(el)el.textContent='Copy failed — try selecting the link manually.';
+  });
 }
 
 function closeWinOverlay(e){if(e.target===document.getElementById('win-overlay'))document.getElementById('win-overlay').classList.remove('open');}
