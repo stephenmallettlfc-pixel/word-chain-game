@@ -4,6 +4,14 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Word Chain</title>
+<meta name="description" content="Word Chain — a free daily word-ladder puzzle. Change one letter at a time to connect two words. Three difficulty levels, works on any device, no login needed. Perfect for classrooms!" />
+<meta property="og:title" content="Word Chain — Daily Word Ladder Puzzle" />
+<meta property="og:description" content="Free daily word-ladder puzzle. Change one letter at a time to connect two words. Three difficulty levels, perfect for classrooms. No login needed." />
+<meta property="og:url" content="https://wordchain-puzzle.com" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Word Chain — Daily Word Ladder Puzzle" />
+<meta name="twitter:description" content="Free daily word-ladder puzzle. Change one letter at a time. Three difficulty levels, perfect for classrooms." />
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
 <style>
   :root {
@@ -127,12 +135,14 @@
   footer { margin-top: auto; padding: 1.5rem; font-size: 12px; color: var(--text-hint); text-align: center; }
   #canvas-wrap { display: none; }
 
+
   .practice-btn { padding: 6px 14px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; }
   .practice-btn:hover { background: var(--bg); color: var(--text); }
   .practice-banner { width: 100%; background: var(--blue-bg); border-bottom: 1px solid var(--blue-border); padding: 8px 1rem; text-align: center; font-size: 13px; color: var(--blue-text); font-weight: 500; display: none; }
   .practice-banner.show { display: block; }
   .new-puzzle-btn { margin-top: 1rem; width: 100%; padding: 11px; border-radius: var(--radius); border: 1px solid var(--blue-border); background: var(--blue-bg); color: var(--blue-text); font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; }
   .new-puzzle-btn:hover { opacity: 0.85; }
+
 
   /* FOR TEACHERS SECTION */
   .teachers-section { width: 100%; max-width: 480px; padding: 0 1rem 2rem; margin: 0 auto; }
@@ -153,11 +163,13 @@
   .for-teachers-btn { padding: 6px 14px; border-radius: var(--radius); border: 1px solid var(--green-border); background: var(--green-bg); color: var(--green-text); font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; font-weight: 500; }
   .for-teachers-btn:hover { opacity: 0.85; }
 
+
   /* DIFFICULTY BADGE */
   .diff-badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px; margin-top: 8px; letter-spacing: 0.03em; }
   .diff-badge.d1 { background: var(--green-bg); color: var(--green-text); }
   .diff-badge.d2 { background: var(--amber-bg); color: var(--amber-text); }
   .diff-badge.d3 { background: var(--pink-bg); color: var(--pink-text); }
+
 
   /* OPTIMAL PATH STYLES */
   .optimal-section { margin-bottom: 1.25rem; }
@@ -169,6 +181,7 @@
   .optimal-word { background: var(--green-bg); border-radius: var(--radius); padding: 4px 9px; font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--green-text); letter-spacing: 0.06em; }
   .optimal-word.start-word { background: var(--amber-bg); color: var(--amber-text); }
   .optimal-arr { color: var(--text-hint); font-size: 10px; }
+
 
   /* HINT STYLES */
   .hint-section { margin-top: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
@@ -183,9 +196,80 @@
   .hint-msg { font-size: 14px; color: var(--text); }
   .hint-msg strong { font-weight: 500; font-family: 'DM Mono', monospace; }
   @keyframes hintpop { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+
+  /* CUSTOM MODE BANNER */
+  .custom-banner { width: 100%; background: #f0fdf4; border-bottom: 1px solid #86efac; padding: 8px 1rem; text-align: center; font-size: 13px; color: #166534; font-weight: 500; display: none; }
+  .custom-banner.show { display: block; }
+
+  /* CLASSROOM LINK GENERATOR */
+  .classroom-generator { margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1.25rem; }
+  .classroom-generator-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+  .classroom-generator-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 0.75rem; line-height: 1.5; }
+  .cg-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .cg-input { flex: 1; min-width: 80px; padding: 8px 10px; font-size: 14px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: 'DM Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; outline: none; }
+  .cg-input:focus { border-color: #7ecb84; box-shadow: 0 0 0 3px rgba(126,203,132,0.2); }
+  .cg-select { flex: 1; min-width: 100px; padding: 8px 10px; font-size: 13px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: 'DM Sans', sans-serif; outline: none; cursor: pointer; }
+  .cg-btn { width: 100%; padding: 10px; border-radius: var(--radius); border: 1px solid var(--green-border); background: var(--green-bg); color: var(--green-text); font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; margin-bottom: 6px; }
+  .cg-btn:hover { opacity: 0.9; }
+  .cg-result { display: none; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; margin-top: 6px; }
+  .cg-result.show { display: block; }
+  .cg-link { font-size: 12px; color: var(--blue-text); word-break: break-all; font-family: 'DM Mono', monospace; margin-bottom: 6px; }
+  .cg-copy-btn { width: 100%; padding: 8px; border-radius: var(--radius); border: 1px solid var(--blue-border); background: var(--blue-bg); color: var(--blue-text); font-size: 12px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; }
+  .cg-msg { font-size: 12px; color: var(--text-muted); margin-top: 4px; min-height: 16px; }
+
+  /* PRINT PUZZLE BUTTON */
+  .print-btn { padding: 6px 14px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; }
+  .print-btn:hover { background: var(--bg); color: var(--text); }
+
+  /* ESL SECTION */
+  .esl-section { width: 100%; max-width: 480px; padding: 0 1rem 2rem; margin: 0 auto; }
+  .esl-card { background: var(--surface); border: 1px solid var(--blue-border); border-radius: var(--radius-lg); padding: 1.5rem; }
+  .esl-header { display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem; }
+  .esl-icon { font-size: 22px; }
+  .esl-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); }
+  .esl-intro { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.25rem; }
+  .esl-benefits { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.25rem; }
+  .esl-benefit { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .esl-curriculum { background: var(--amber-bg); border: 1px solid var(--amber-border); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 1.25rem; }
+  .esl-curriculum p { font-size: 12px; color: var(--amber-text); line-height: 1.6; }
+  .esl-link-btn { width: 100%; padding: 11px; border-radius: var(--radius); border: 1px solid var(--blue-border); background: var(--blue-bg); color: var(--blue-text); font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; }
+  .esl-link-btn:hover { opacity: 0.9; }
+  .esl-copied { font-size: 12px; color: var(--blue-text); text-align: center; min-height: 18px; margin-top: 6px; }
+
+  /* PRINT STYLES */
+  @media print {
+    header, .streak-bar, .practice-banner, .custom-banner, .level-tabs,
+    .stats, .chain-area, #game-input, #already-done, .hint-section,
+    footer, .overlay, .teachers-section, .esl-section, .header-btns,
+    .daily-badge, #diff-badge-wrap { display: none !important; }
+    .print-layout { display: block !important; }
+    body { background: white; min-height: auto; }
+    .print-layout { page-break-inside: avoid; }
+  }
+
+  /* PRINT LAYOUT (hidden on screen) */
+  .print-layout { display: none; max-width: 600px; margin: 0 auto; padding: 2rem; font-family: 'DM Sans', sans-serif; }
+  .pl-title { font-family: 'DM Serif Display', serif; font-size: 28px; color: #1a1814; margin-bottom: 4px; }
+  .pl-sub { font-size: 13px; color: #8a8680; margin-bottom: 1.5rem; letter-spacing: 0.05em; }
+  .pl-pair { display: flex; align-items: center; gap: 16px; margin-bottom: 1.5rem; }
+  .pl-word { font-family: 'DM Mono', monospace; font-size: 26px; font-weight: 500; padding: 10px 20px; border: 2px solid #e8e4dc; border-radius: 10px; letter-spacing: 0.1em; }
+  .pl-word.start { border-color: #f5c842; background: #fef3e2; }
+  .pl-word.end { border-color: #7ecb84; background: #edf7ee; }
+  .pl-arrow { font-size: 22px; color: #b8b4ae; }
+  .pl-steps-label { font-size: 12px; color: #8a8680; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .pl-step { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .pl-step-num { font-size: 12px; color: #b8b4ae; width: 20px; text-align: right; flex-shrink: 0; }
+  .pl-step-box { flex: 1; border-bottom: 2px solid #e8e4dc; height: 36px; display: flex; align-items: center; }
+  .pl-step-letters { display: flex; gap: 8px; }
+  .pl-letter-box { width: 34px; height: 34px; border: 1.5px solid #e8e4dc; border-radius: 6px; }
+  .pl-rule { font-size: 12px; color: #b8b4ae; margin-top: 1.5rem; text-align: center; }
+  .pl-url { font-size: 11px; color: #b8b4ae; margin-top: 0.5rem; text-align: center; letter-spacing: 0.08em; }
+
 </style>
 </head>
 <body>
+
 
 <div class="overlay" id="help-overlay" onclick="closeHelp(event)">
   <div class="modal">
@@ -219,6 +303,7 @@
     <button class="got-it" onclick="closeHelpBtn()">Got it — let's play!</button>
   </div>
 </div>
+
 
 <div class="overlay" id="win-overlay" onclick="closeWinOverlay(event)">
   <div class="modal">
@@ -260,18 +345,25 @@
   </div>
 </div>
 
+
 <header>
   <span class="logo">Word Chain</span>
   <span class="logo-sub">Daily puzzle</span>
   <div class="header-btns">
     <button class="for-teachers-btn" onclick="document.getElementById('teachers-section').scrollIntoView({behavior:'smooth'})">For Teachers</button>
     <button class="practice-btn" onclick="startPractice()">Practice</button>
+    <button class="print-btn" onclick="printPuzzle()">Print puzzle</button>
     <button class="help-btn" onclick="openHelp()">How to play</button>
   </div>
 </header>
 
+
 <div class="streak-bar" id="streak-bar"></div>
+
+<div class="custom-banner" id="custom-banner">🔗 Custom classroom puzzle</div>
+
 <div class="practice-banner" id="practice-banner">Practice mode — results don't count toward your streak &nbsp;·&nbsp; <button onclick="exitPractice()" style="background:none;border:none;color:var(--blue-text);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:underline;">exit</button></div>
+
 
 <div class="game">
   <div class="daily-badge" id="daily-badge">Loading today's puzzle...</div>
@@ -331,6 +423,7 @@
   </div>
 </div>
 
+
 <section class="teachers-section" id="teachers-section">
   <div class="teachers-card">
     <div class="teachers-header">
@@ -351,10 +444,68 @@
     </div>
     <button class="teachers-copy-btn" onclick="copyTeacherLink()">📋 Copy classroom link to share</button>
     <div class="teachers-copied" id="teachers-copied"></div>
+
+    <div class="classroom-generator">
+      <div class="classroom-generator-title">🔗 Create a custom puzzle link</div>
+      <div class="classroom-generator-desc">Enter any two words and share a direct link — students open it and play your custom word chain. Great for vocabulary lists.</div>
+      <div class="cg-row">
+        <input class="cg-input" id="cg-from" maxlength="5" placeholder="START" autocapitalize="characters" spellcheck="false" />
+        <input class="cg-input" id="cg-to" maxlength="5" placeholder="END" autocapitalize="characters" spellcheck="false" />
+        <select class="cg-select" id="cg-level">
+          <option value="easy">Easy (3 letters)</option>
+          <option value="medium" selected>Medium (4 letters)</option>
+          <option value="hard">Hard (5 letters)</option>
+        </select>
+      </div>
+      <button class="cg-btn" onclick="generateClassroomLink()">Generate classroom link</button>
+      <div class="cg-result" id="cg-result">
+        <div class="cg-link" id="cg-link"></div>
+        <button class="cg-copy-btn" onclick="copyClassroomLink()">📋 Copy link</button>
+      </div>
+      <div class="cg-msg" id="cg-msg"></div>
+    </div>
   </div>
 </section>
 
+<section class="esl-section" id="esl-section">
+  <div class="esl-card">
+    <div class="esl-header">
+      <span class="esl-icon">🌍</span>
+      <span class="esl-title">For ESL &amp; EFL Teachers</span>
+    </div>
+    <p class="esl-intro">Word Chain is a powerful vocabulary tool for English language learners. Changing one letter at a time makes students focus on how spelling and meaning shift — a natural, game-based approach to morphological awareness.</p>
+    <div class="esl-benefits">
+      <div class="esl-benefit"><span class="tb-icon" style="color:var(--blue-text)">✓</span><span>Builds spelling pattern recognition — students see exactly how one letter change alters a word</span></div>
+      <div class="esl-benefit"><span class="tb-icon" style="color:var(--blue-text)">✓</span><span>Vocabulary expansion through word families — CAT → BAT → BIT → BIG reveals connected clusters</span></div>
+      <div class="esl-benefit"><span class="tb-icon" style="color:var(--blue-text)">✓</span><span>Low-pressure, high-engagement — students focus on the puzzle, not on fear of making mistakes</span></div>
+      <div class="esl-benefit"><span class="tb-icon" style="color:var(--blue-text)">✓</span><span>Works for A1–B2 levels — Easy (3-letter) words suit beginners; Medium and Hard suit intermediate learners</span></div>
+      <div class="esl-benefit"><span class="tb-icon" style="color:var(--blue-text)">✓</span><span>Use the custom link generator above to build puzzles from your own vocabulary lists</span></div>
+      <div class="esl-benefit"><span class="tb-icon" style="color:var(--blue-text)">✓</span><span>No login, no app — works instantly on any device in any country</span></div>
+    </div>
+    <div class="esl-curriculum">
+      <p><strong>TESOL / TEFL use</strong> — Suitable as a warmer, cooler, or independent activity. Supports phonics awareness, orthographic knowledge, and productive vocabulary. Can be used with word lists from any CEFR-aligned course.</p>
+    </div>
+    <button class="esl-link-btn" onclick="copyEslLink()">📋 Copy link to share with ESL colleagues</button>
+    <div class="esl-copied" id="esl-copied"></div>
+  </div>
+</section>
+<div class="print-layout" id="print-layout">
+  <div class="pl-title">Word Chain</div>
+  <div class="pl-sub" id="pl-sub">Daily puzzle — wordchain-puzzle.com</div>
+  <div class="pl-pair">
+    <div class="pl-word start" id="pl-start">—</div>
+    <div class="pl-arrow">→</div>
+    <div class="pl-word end" id="pl-end">—</div>
+  </div>
+  <div class="pl-steps-label">Your chain — fill in the steps</div>
+  <div id="pl-steps"></div>
+  <div class="pl-rule" id="pl-rule">Change exactly one letter at each step · every word must be real</div>
+  <div class="pl-url">wordchain-puzzle.com</div>
+</div>
+
+
 <footer>Word Chain &mdash; a daily word puzzle &mdash; wordchain-puzzle.com</footer>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
@@ -366,6 +517,7 @@ const LEVELS={
   hard:{wordLen:5,puzzles:[{s:'BLACK',e:'WHITE',par:6,d:3},{s:'BREAD',e:'TOAST',par:6,d:3},{s:'LIGHT',e:'SHADE',par:6,d:3},{s:'SHARP',e:'BLUNT',par:6,d:3},{s:'BRAVE',e:'TIMID',par:7,d:3},{s:'FLAME',e:'FROST',par:7,d:3},{s:'STEEL',e:'STONE',par:5,d:3},{s:'RIVER',e:'OCEAN',par:6,d:3},{s:'PLANT',e:'BLOOM',par:5,d:3},{s:'STORM',e:'CLEAR',par:7,d:3},{s:'DRINK',e:'FEAST',par:6,d:3},{s:'SMILE',e:'FROWN',par:6,d:3},{s:'NIGHT',e:'BREAK',par:6,d:3},{s:'CLOCK',e:'TIMER',par:6,d:3},{s:'SWEET',e:'SALTY',par:4,d:3}],
   words:new Set(['ABOUT','ABOVE','ABUSE','ACTOR','ACUTE','ADMIT','ADOPT','ADULT','AFTER','AGAIN','AGILE','AGREE','AHEAD','ALARM','ALBUM','ALERT','ALIKE','ALIVE','ALLEY','ALLOW','ALONE','ALONG','ALTER','ANGEL','ANGER','ANGLE','ANGRY','ANNEX','APPLY','ARISE','ARSON','ASIDE','ATLAS','ATTIC','AVOID','AWAKE','AWARD','AWARE','AWFUL','BADLY','BAKER','BASIC','BASIN','BATCH','BEACH','BEARD','BEAST','BEGIN','BEING','BELOW','BENCH','BIBLE','BIRTH','BLADE','BLACK','BLAND','BLANK','BLAST','BLAZE','BLEED','BLEND','BLESS','BLIND','BLOCK','BLOOD','BLOWN','BLOOM','BOARD','BONUS','BOOST','BOOTH','BORED','BOUND','BRAIN','BRAND','BRAVE','BREAD','BREAK','BREED','BRICK','BRIDE','BRIEF','BRING','BROAD','BROKE','BROWN','BRUSH','BUILD','BUILT','BURST','BUYER','CABIN','CAMEL','CARRY','CATCH','CAUSE','CHAIN','CHAIR','CHALK','CHAOS','CHARM','CHART','CHASE','CHEAP','CHECK','CHESS','CHEST','CHIEF','CHILD','CHILL','CHOSE','CIVIC','CIVIL','CLAIM','CLAMP','CLASS','CLEAN','CLEAR','CLERK','CLICK','CLIFF','CLIMB','CLING','CLOCK','CLONE','CLOSE','CLOUD','CLOWN','COACH','COMET','COMIC','CORAL','COULD','COUNT','COVER','CRAFT','CRASH','CRAZY','CREAM','CREEK','CRIME','CRISP','CROSS','CROWD','CROWN','CRUEL','CRUSH','CURVE','DAILY','DANCE','DEATH','DEBUT','DECAY','DEPTH','DIGIT','DIRTY','DIZZY','DODGE','DOUBT','DOUGH','DRAFT','DRAIN','DRAMA','DREAM','DRIFT','DRILL','DRINK','DRIVE','DROVE','DROWN','DYING','EAGER','EAGLE','EARLY','EARTH','EIGHT','ELITE','EMPTY','ENEMY','ENJOY','ENTER','EQUAL','ERROR','ESSAY','EVENT','EVERY','EXACT','EXIST','EXTRA','FAINT','FAIRY','FAITH','FALSE','FANCY','FATAL','FAULT','FEAST','FENCE','FETCH','FEVER','FIBER','FIELD','FIFTH','FIFTY','FIGHT','FINAL','FIRST','FIXED','FLAME','FLARE','FLASH','FLEET','FLESH','FLINT','FLOCK','FLOOD','FLOOR','FLOUR','FOCUS','FORCE','FORGE','FORTH','FORUM','FOUND','FRAME','FRANK','FRAUD','FRESH','FRONT','FROST','FROZE','FRUIT','FULLY','FUNNY','GLARE','GLASS','GLAZE','GLOBE','GLOOM','GLORY','GLOSS','GLOVE','GOING','GRACE','GRADE','GRAIN','GRAND','GRANT','GRASP','GRASS','GRAVE','GREAT','GREEN','GRIEF','GROAN','GROOM','GROUP','GROVE','GROWN','GUARD','GUESS','GUEST','GUIDE','GUILD','HABIT','HARSH','HASTE','HATCH','HAVEN','HEART','HEAVY','HEDGE','HENCE','HERBS','HONOR','HORSE','HOTEL','HOUSE','HUMAN','HUMOR','IDEAL','IMAGE','IMPLY','INDEX','INNER','INPUT','ISSUE','IVORY','JEWEL','JUDGE','KNIFE','KNOCK','KNOWN','LABEL','LANCE','LARGE','LASER','LATCH','LATER','LAUGH','LAYER','LEARN','LEASE','LEAST','LEAVE','LEGAL','LEVEL','LIGHT','LIMIT','LIVER','LOCAL','LODGE','LOGIC','LOOSE','LOWER','LOYAL','LUCKY','MAGIC','MAJOR','MAKER','MANOR','MAPLE','MARCH','MATCH','MAYOR','MEDAL','MERCY','MERGE','MIGHT','MINOR','MINUS','MODEL','MONEY','MONTH','MORAL','MOUNT','MOUTH','MOVIE','MUSIC','NAIVE','NASTY','NERVE','NIGHT','NOBLE','NOISE','NORTH','NOVEL','NURSE','OCCUR','OCEAN','OFFER','OFTEN','ORDER','OUGHT','OUTER','OWNED','OWNER','OZONE','PAINT','PANEL','PANIC','PAPER','PARTY','PEACE','PEARL','PENNY','PERCH','PHASE','PHONE','PHOTO','PIANO','PIECE','PILOT','PITCH','PLACE','PLAIN','PLANE','PLANK','PLANT','PLATE','PLAZA','PLEAD','PLUCK','PLUMB','PLUME','POINT','POLAR','POUCH','POWER','PRESS','PRICE','PRIDE','PRIME','PRINT','PRIOR','PRIZE','PROBE','PRONE','PROOF','PROSE','PROUD','PROVE','PROXY','PULSE','PUNCH','PUPIL','QUEEN','QUERY','QUICK','QUIET','QUITE','QUOTA','QUOTE','RADAR','RAISE','RALLY','RANGE','RAPID','RATIO','REACH','REALM','REBEL','REIGN','RELAX','REPAY','RIDER','RIDGE','RIGHT','RIGID','RISKY','RIVAL','RIVER','ROBOT','ROCKY','ROUND','ROUTE','ROYAL','RULER','RURAL','SAINT','SANDY','SAUCE','SCALE','SCARE','SCENE','SCOPE','SCORE','SCOUT','SEIZE','SENSE','SERVE','SEVEN','SHAFT','SHALL','SHAME','SHAPE','SHARE','SHARK','SHARP','SHIFT','SHINE','SHIRT','SHOCK','SHORT','SHOUT','SIGHT','SILLY','SINCE','SIXTH','SIXTY','SKILL','SKULL','SLASH','SLATE','SLAVE','SLEEP','SLEET','SLICE','SLICK','SLIDE','SLOPE','SMART','SMELL','SMILE','SMOKE','SOLID','SOLVE','SORRY','SOUTH','SPACE','SPARK','SPAWN','SPEAK','SPELL','SPEND','SPICE','SPINE','SPITE','SPLIT','SPOKE','SPOON','SPORT','SPRAY','SQUAD','STACK','STAFF','STAGE','STAIN','STAKE','STALE','STALL','STAMP','STAND','START','STATE','STEAM','STEEL','STEEP','STEER','STICK','STIFF','STILL','STOCK','STONE','STOOD','STORE','STORM','STORY','STOVE','STRAP','STRAW','STRAY','STRIP','STUCK','STUDY','STYLE','SUGAR','SUITE','SUNNY','SUPER','SURGE','SWAMP','SWEAR','SWEAT','SWEEP','SWELL','SWEPT','SWIFT','SWIRL','SWORD','TABLE','TASTE','TEACH','THANK','THEME','THERE','THESE','THICK','THING','THINK','THORN','THOSE','THREE','THREW','THROW','TIGER','TIMID','TIMER','TIRED','TITLE','TODAY','TOKEN','TORCH','TOTAL','TOUCH','TOUGH','TOWEL','TOWER','TRACE','TRACK','TRAIL','TRAIN','TRASH','TREAD','TREAT','TREND','TRIAL','TRIBE','TRICK','TRIED','TROOP','TRUCK','TRULY','TRUNK','TRUST','TRUTH','TULIP','TWICE','TWIST','ULTRA','UNDER','UNION','UNTIL','UPPER','UPSET','URBAN','USAGE','USUAL','UTTER','VALID','VALUE','VALVE','VAPOR','VAULT','VERSE','VIDEO','VIGOR','VIRAL','VIRUS','VISIT','VISTA','VITAL','VIVID','VOICE','VOTER','WALTZ','WASTE','WATCH','WATER','WEARY','WEAVE','WEIGH','WEIRD','WHALE','WHEAT','WHEEL','WHERE','WHICH','WHILE','WHIRL','WHISK','WHOLE','WHOSE','WIDTH','WITCH','WORLD','WORRY','WORSE','WORST','WORTH','WOULD','WOUND','WRATH','WRIST','WRITE','WROTE','YACHT','YIELD','YOUNG','YOUTH','ZEBRA','SHADE','SHALE','SHAVE','BLUNT','SLANT','PLANE','BLANK','STAND','STARE','SHARE','SHORE','BLADE','BLAZE','GLAZE','GRACE','GRAZE','CRAVE','BRACE','TRACE','PLATE','SLATE','FLAME','BLAME','STEAD','STEED','SLEEP','FLEET','FLESH','PRESS','DRESS','CROSS','GROSS','GROAN','GRAIN','BRAIN','BLEED','BREED','GREED','SHEET','SWEET','SWEAT','WHEAT','CHEAT','CLEAT','TOAST','FROWN','DRINK','BRINK','BLINK','BLIND','BREAK','BLEAK','CLEAN','GLEAM','STEAM','STEAL','SALTY','SILTY','SIXTH','SIXTY','SIREN','TIMER','DIMER','DINER','FINER','LINER','MINER','MINOR','MANOR','MANOR'])}
 };
+
 
 function todayStr(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
 function getDailyPuzzle(lvl){const puzzles=LEVELS[lvl].puzzles;const start=new Date('2026-04-01');const today=new Date();const days=Math.floor((today-start)/(1000*60*60*24));return puzzles[Math.abs(days)%puzzles.length];}
@@ -379,10 +531,13 @@ function showStreakBar(count){const bar=document.getElementById('streak-bar');if
 function checkAlreadyDone(lvl){try{return localStorage.getItem('wc_done_'+lvl+'_'+todayStr())==='1';}catch(e){return false;}}
 function markDone(lvl){try{localStorage.setItem('wc_done_'+lvl+'_'+todayStr(),'1');}catch(e){}}
 
+
 let level='easy',chain=[],currentPuzzle=null,currentStreak={count:0,best:0};
 let hintsUsed=0,practiceMode=false;
 
+
 function ordinal(n){const s=['th','st','nd','rd'];const v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
+
 
 function bfsSolve(from,to,wordSet){
   const f=from.toUpperCase(),t=to.toUpperCase();
@@ -402,6 +557,7 @@ function bfsSolve(from,to,wordSet){
   return null;
 }
 
+
 function startPractice(){
   practiceMode=true;
   document.getElementById('practice-banner').classList.add('show');
@@ -409,12 +565,14 @@ function startPractice(){
   loadPracticePuzzle();
 }
 
+
 function exitPractice(){
   practiceMode=false;
   document.getElementById('practice-banner').classList.remove('show');
   const s=loadStreak();showStreakBar(s.count);
   setLevel(level);
 }
+
 
 function generatePracticePuzzle(lvl){
   const wordSet=LEVELS[lvl].words;const words=Array.from(wordSet);
@@ -430,6 +588,7 @@ function generatePracticePuzzle(lvl){
   }
   return null;
 }
+
 
 function loadPracticePuzzle(){
   const puzzle=generatePracticePuzzle(level);
@@ -447,15 +606,15 @@ function loadPracticePuzzle(){
   document.getElementById('wi').maxLength=L.wordLen;
   document.getElementById('wi').placeholder=L.wordLen+'-letter word...';
   document.getElementById('rule-txt').textContent='All '+L.wordLen+'-letter words · one letter changes per step';
-  document.getElementById('hbar').textContent='Change one letter from '+puzzle.s;
+  document.getElementById('hbar').innerHTML='Change one letter from <strong id="cur-hint">'+puzzle.s+'</strong>';
   document.getElementById('hbar').className='hbar';
-  document.getElementById('cur-hint').textContent=puzzle.s;
   document.getElementById('already-done').style.display='none';
   document.getElementById('game-input').style.display='block';
   document.getElementById('hint-bubble').classList.remove('visible');
   document.getElementById('hint-cost').textContent='each hint adds +1 step';
   render();document.getElementById('wi').focus();
 }
+
 
 function useHint(){
   if(!currentPuzzle||!chain.length)return;
@@ -483,8 +642,10 @@ function useHint(){
   document.getElementById('hint-cost').textContent=hintsUsed+' hint'+(hintsUsed>1?'s':'')+' used · +'+hintsUsed+' steps';
 }
 
+
 function diff(a,b){if(a.length!==b.length)return -1;let d=0;for(let i=0;i<a.length;i++)if(a[i]!==b[i])d++;return d;}
 function isValid(w){return w===currentPuzzle.s||w===currentPuzzle.e||LEVELS[level].words.has(w);}
+
 
 function render(){
   const el=document.getElementById('cdisp');
@@ -498,6 +659,7 @@ function render(){
   });
   document.getElementById('steps-v').textContent=(chain.length>1?chain.length-1:0)+(hintsUsed||0);
 }
+
 
 function submit(){
   const inp=document.getElementById('wi');const v=inp.value.trim().toUpperCase();inp.value='';
@@ -517,18 +679,18 @@ function submit(){
     const stats=recordWin(level,steps,currentPuzzle.par);
     showWinModal(steps,currentPuzzle.par,stats);return;
   }
-  document.getElementById('cur-hint').textContent=v;
-  hbar.textContent='Good! From '+v+' — change one letter';hbar.className='hbar ok';inp.focus();
+  hbar.innerHTML='Good! From <strong id="cur-hint">'+v+'</strong> — change one letter';hbar.className='hbar ok';inp.focus();
 }
+
 
 function undo(){
   if(chain.length<=1)return;chain.pop();
   document.getElementById('hint-bubble').classList.remove('visible');
   render();const cur=chain[chain.length-1];
-  document.getElementById('cur-hint').textContent=cur;
-  document.getElementById('hbar').textContent='Back to '+cur+' — change one letter';
+  document.getElementById('hbar').innerHTML='Back to <strong id="cur-hint">'+cur+'</strong> — change one letter';
   document.getElementById('hbar').className='hbar';
 }
+
 
 function showWinModal(steps,par,stats){
   let msg='';
@@ -538,14 +700,17 @@ function showWinModal(steps,par,stats){
   document.getElementById('win-modal-title').textContent=practiceMode?'Practice complete!':'Chain complete!';
   document.getElementById('win-modal-msg').textContent=msg;
 
+
   const avg=stats.totalPar>0?Math.round((stats.totalSteps/stats.totalPar)*100)+'%':'—';
   const grid=document.getElementById('stats-grid');grid.innerHTML='';
   [{v:stats.wins,l:'puzzles solved'},{v:currentStreak.count,l:'current streak'},{v:currentStreak.best,l:'best streak'},{v:avg,l:'steps vs par'}].forEach(c=>{
     grid.innerHTML+='<div class="stat-card"><div class="sv">'+c.v+'</div><div class="sl">'+c.l+'</div></div>';
   });
 
+
   const ls=document.getElementById('level-stats');ls.innerHTML='';
   ['easy','medium','hard'].forEach(l=>{const v=stats[l]||0;ls.innerHTML+='<div class="level-stat-row"><span class="lname">'+l.charAt(0).toUpperCase()+l.slice(1)+'</span><span class="lval">'+v+' solved</span></div>';});
+
 
   const optEl=document.getElementById('optimal-section');
   const optPath=bfsSolve(currentPuzzle.s,currentPuzzle.e,LEVELS[level].words);
@@ -562,6 +727,7 @@ function showWinModal(steps,par,stats){
       optEl.innerHTML='<div class="optimal-path"><div class="optimal-steps">Shortest solution: <strong>'+optSteps+' step'+(optSteps!==1?'s':'')+'</strong></div><div class="optimal-words">'+wordsHtml+'</div></div>';
     }
   } else { optEl.innerHTML=''; }
+
 
   const today=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
   document.getElementById('rc-date').textContent=today;
@@ -590,6 +756,7 @@ function showWinModal(steps,par,stats){
   document.getElementById('win-practice-btn').style.display=practiceMode?'block':'none';
 }
 
+
 function saveImage(){
   const card=document.getElementById('result-card');
   if(typeof html2canvas==='undefined'){alert('Image saving not available — try copying the text instead.');return;}
@@ -597,6 +764,7 @@ function saveImage(){
     const link=document.createElement('a');link.download='wordchain-'+todayStr()+'.png';link.href=canvas.toDataURL('image/png');link.click();
   }).catch(()=>{alert('Could not save image — try copying the text instead.');});
 }
+
 
 function copyText(){
   const steps=chain.length-1+hintsUsed;const par=currentPuzzle.par;
@@ -608,6 +776,7 @@ function copyText(){
   navigator.clipboard.writeText(text).then(()=>{document.getElementById('share-copied').textContent='Copied! Ready to paste and share.';}).catch(()=>{document.getElementById('share-copied').textContent='Copy failed — try manually selecting the text.';});
 }
 
+
 function copyTeacherLink(){
   const el=document.getElementById('teachers-copied');
   const text='Word Chain — free daily word ladder puzzle for the classroom\nwordchain-puzzle.com\n\nStudents change one letter at a time to connect two words. Three difficulty levels, works on any device, no login needed. Great for vocabulary and spelling — Years 4–6.';
@@ -618,12 +787,15 @@ function copyTeacherLink(){
   });
 }
 
+
 function closeWinOverlay(e){if(e.target===document.getElementById('win-overlay'))document.getElementById('win-overlay').classList.remove('open');}
+
 
 function setLevel(l){
   level=l;['easy','medium','hard'].forEach(x=>{document.getElementById('tab-'+x).className='ltab'+(x===l?' active-'+l:'');});
   if(practiceMode){loadPracticePuzzle();}else{loadPuzzle();}
 }
+
 
 function loadPuzzle(){
   currentPuzzle=getDailyPuzzle(level);chain=[currentPuzzle.s];hintsUsed=0;
@@ -641,9 +813,8 @@ function loadPuzzle(){
   document.getElementById('wi').maxLength=L.wordLen;
   document.getElementById('wi').placeholder=L.wordLen+'-letter word...';
   document.getElementById('rule-txt').textContent='All '+L.wordLen+'-letter words · one letter changes per step';
-  document.getElementById('hbar').textContent='Change one letter from '+currentPuzzle.s;
+  document.getElementById('hbar').innerHTML='Change one letter from <strong id="cur-hint">'+currentPuzzle.s+'</strong>';
   document.getElementById('hbar').className='hbar';
-  document.getElementById('cur-hint').textContent=currentPuzzle.s;
   document.getElementById('already-done').style.display='none';
   document.getElementById('game-input').style.display=checkAlreadyDone(level)?'none':'block';
   document.getElementById('hint-bubble').classList.remove('visible');
@@ -656,14 +827,155 @@ function loadPuzzle(){
   render();document.getElementById('wi').focus();
 }
 
+
 function openHelp(){document.getElementById('help-overlay').classList.add('open');}
 function closeHelpBtn(){document.getElementById('help-overlay').classList.remove('open');}
 function closeHelp(e){if(e.target===document.getElementById('help-overlay'))closeHelpBtn();}
 
+
+
+
+// ── CUSTOM PUZZLE / CLASSROOM MODE ──────────────────────────────
+let customMode = false;
+
+function parseUrlPuzzle() {
+  const params = new URLSearchParams(window.location.search);
+  const from = (params.get('from') || '').toUpperCase().trim();
+  const to   = (params.get('to')   || '').toUpperCase().trim();
+  const lvl  = params.get('level') || 'easy';
+  if (from && to && ['easy','medium','hard'].includes(lvl)) {
+    return { from, to, lvl };
+  }
+  return null;
+}
+
+function loadCustomPuzzle(from, to, lvl) {
+  const wordSet = LEVELS[lvl].words;
+  const L = LEVELS[lvl];
+  // Accept start/end words even if not in the word list (teacher may use any real word)
+  const augmented = new Set([...wordSet, from, to]);
+  const path = bfsSolve(from, to, augmented);
+  if (!path) {
+    document.getElementById('daily-badge').textContent = 'Custom puzzle — no path found between ' + from + ' and ' + to;
+    return;
+  }
+  customMode = true;
+  practiceMode = false;
+  currentPuzzle = { s: from, e: to, par: path.length - 1, d: 2 };
+  chain = [from];
+  hintsUsed = 0;
+  document.getElementById('custom-banner').classList.add('show');
+  document.getElementById('practice-banner').classList.remove('show');
+  document.getElementById('streak-bar').style.display = 'none';
+  document.getElementById('daily-badge').textContent = 'Custom puzzle · ' + lvl.charAt(0).toUpperCase() + lvl.slice(1);
+  document.getElementById('start-badge').textContent = from;
+  document.getElementById('end-badge').textContent = to;
+  const dw = document.getElementById('diff-badge-wrap');
+  dw.innerHTML = '<span class="diff-badge d2">Custom</span>';
+  document.getElementById('par-v').textContent = path.length - 1;
+  document.getElementById('steps-v').textContent = 0;
+  document.getElementById('best-v').textContent = '—';
+  document.getElementById('wi').maxLength = L.wordLen;
+  document.getElementById('wi').placeholder = L.wordLen + '-letter word...';
+  document.getElementById('rule-txt').textContent = 'All ' + L.wordLen + '-letter words · one letter changes per step';
+  document.getElementById('hbar').innerHTML = 'Change one letter from <strong id="cur-hint">' + from + '</strong>';
+  document.getElementById('hbar').className = 'hbar';
+  document.getElementById('already-done').style.display = 'none';
+  document.getElementById('game-input').style.display = 'block';
+  document.getElementById('hint-bubble').classList.remove('visible');
+  document.getElementById('hint-cost').textContent = 'each hint adds +1 step';
+  // Update level tabs to match
+  ['easy','medium','hard'].forEach(x => {
+    document.getElementById('tab-' + x).className = 'ltab' + (x === lvl ? ' active-' + lvl : '');
+  });
+  level = lvl;
+  render();
+  document.getElementById('wi').focus();
+}
+
+function generateClassroomLink() {
+  const from  = document.getElementById('cg-from').value.toUpperCase().trim();
+  const to    = document.getElementById('cg-to').value.toUpperCase().trim();
+  const lvl   = document.getElementById('cg-level').value;
+  const msg   = document.getElementById('cg-msg');
+  const result= document.getElementById('cg-result');
+  const L     = LEVELS[lvl];
+  msg.textContent = '';
+  result.classList.remove('show');
+  if (!from || !to) { msg.textContent = 'Please enter both a start and end word.'; return; }
+  if (from.length !== L.wordLen) { msg.textContent = 'Start word must be ' + L.wordLen + ' letters for ' + lvl + ' difficulty.'; return; }
+  if (to.length   !== L.wordLen) { msg.textContent = 'End word must be '   + L.wordLen + ' letters for ' + lvl + ' difficulty.'; return; }
+  if (from === to) { msg.textContent = 'Start and end words must be different.'; return; }
+  const augmented = new Set([...L.words, from, to]);
+  const path = bfsSolve(from, to, augmented);
+  if (!path) { msg.textContent = 'No valid word path found between those words — try different words.'; return; }
+  const base = window.location.origin + window.location.pathname;
+  const url  = base + '?from=' + from + '&to=' + to + '&level=' + lvl;
+  document.getElementById('cg-link').textContent = url;
+  result.classList.add('show');
+  msg.textContent = '✓ Path exists — ' + (path.length - 1) + ' steps minimum.';
+}
+
+function copyClassroomLink() {
+  const link = document.getElementById('cg-link').textContent;
+  navigator.clipboard.writeText(link).then(() => {
+    document.getElementById('cg-msg').textContent = '✓ Copied! Paste it into a message or email.';
+  }).catch(() => {
+    document.getElementById('cg-msg').textContent = 'Copy failed — select and copy the link manually.';
+  });
+}
+
+// ── PRINT PUZZLE ──────────────────────────────────────────────────
+function printPuzzle() {
+  if (!currentPuzzle) return;
+  const L = LEVELS[level];
+  const today = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+  const modeLabel = customMode ? 'Custom puzzle' : practiceMode ? 'Practice puzzle' : today + ' — ' + level.charAt(0).toUpperCase() + level.slice(1);
+  document.getElementById('pl-sub').textContent = modeLabel + ' · wordchain-puzzle.com';
+  document.getElementById('pl-start').textContent = currentPuzzle.s;
+  document.getElementById('pl-end').textContent = currentPuzzle.e;
+  document.getElementById('pl-rule').textContent = 'Change exactly one letter at each step · all ' + L.wordLen + '-letter words';
+  // Build blank step boxes
+  const stepsEl = document.getElementById('pl-steps');
+  stepsEl.innerHTML = '';
+  const numSteps = Math.max(currentPuzzle.par + 2, 5); // give a few extra rows
+  for (let i = 1; i <= numSteps; i++) {
+    const row = document.createElement('div');
+    row.className = 'pl-step';
+    const num = document.createElement('span');
+    num.className = 'pl-step-num';
+    num.textContent = i;
+    const letters = document.createElement('div');
+    letters.className = 'pl-step-letters';
+    for (let j = 0; j < L.wordLen; j++) {
+      const box = document.createElement('div');
+      box.className = 'pl-letter-box';
+      letters.appendChild(box);
+    }
+    row.appendChild(num);
+    row.appendChild(letters);
+    stepsEl.appendChild(row);
+  }
+  window.print();
+}
+
+// ── ESL LINK COPY ────────────────────────────────────────────────
+function copyEslLink() {
+  const text = 'Word Chain — free daily word-ladder puzzle, great for ESL/EFL classrooms\nwordchain-puzzle.com\n\nStudents change one letter at a time to connect two words. Builds spelling pattern recognition and vocabulary. Works on any device, no login needed. Three difficulty levels (A1–B2). Create custom puzzles from your own vocabulary lists.';
+  navigator.clipboard.writeText(text).then(() => {
+    const el = document.getElementById('esl-copied');
+    if (el) el.textContent = 'Copied! Ready to paste into a message or email.';
+  }).catch(() => {
+    const el = document.getElementById('esl-copied');
+    if (el) el.textContent = 'Copy failed — try selecting the link manually.';
+  });
+}
+
 window.addEventListener('DOMContentLoaded',function(){
   const s=loadStreak();showStreakBar(s.count);
   document.getElementById('wi').addEventListener('keydown',e=>{if(e.key==='Enter')submit();});
-  setLevel('easy');
+  const urlPuzzle=parseUrlPuzzle();
+  if(urlPuzzle){setLevel(urlPuzzle.lvl);loadCustomPuzzle(urlPuzzle.from,urlPuzzle.to,urlPuzzle.lvl);}else{setLevel('easy');}
 });
 </script>
 </body>
