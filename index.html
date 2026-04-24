@@ -4,14 +4,15 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Word Chain</title>
-<meta name="description" content="Word Chain — a free daily word-ladder puzzle. Change one letter at a time to connect two words. Three difficulty levels, works on any device, no login needed. Perfect for classrooms!" />
-<meta property="og:title" content="Word Chain — Daily Word Ladder Puzzle" />
-<meta property="og:description" content="Free daily word-ladder puzzle. Change one letter at a time to connect two words. Three difficulty levels, perfect for classrooms. No login needed." />
+<meta name="description" content="Word Chain — a free daily word-ladder puzzle for primary, secondary and ESL classrooms. Change one letter at a time to connect two words. Three difficulty levels (3, 4, 5 letters) suit KS2, KS3, KS4 and adult learners. Works on any device, no login needed." />
+<meta name="keywords" content="word ladder, word chain, vocabulary, spelling, KS2, KS3, KS4, GCSE, primary, secondary, ESL, EFL, classroom, daily puzzle, word game, educational" />
+<meta property="og:title" content="Word Chain — Daily Word Ladder Puzzle for Classrooms" />
+<meta property="og:description" content="Free daily word-ladder puzzle. Three difficulty levels suit primary (KS2), secondary (KS3–4) and ESL learners. Live leaderboards, classroom mode, no login needed." />
 <meta property="og:url" content="https://wordchain-puzzle.com" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Word Chain — Daily Word Ladder Puzzle" />
-<meta name="twitter:description" content="Free daily word-ladder puzzle. Change one letter at a time. Three difficulty levels, perfect for classrooms." />
+<meta name="twitter:title" content="Word Chain — Daily Word Ladder Puzzle for Classrooms" />
+<meta name="twitter:description" content="Free daily word-ladder puzzle. Primary, secondary, ESL. Live leaderboards. No login needed." />
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
 <style>
   :root {
@@ -24,13 +25,16 @@
     --red-text: #c0392b; --radius: 10px; --radius-lg: 16px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+  body { background: var(--bg); background-image: radial-gradient(circle at 0% 0%, rgba(245,200,66,0.10), transparent 45%), radial-gradient(circle at 100% 100%, rgba(145,184,245,0.12), transparent 45%); background-attachment: fixed; color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
   header { width: 100%; border-bottom: 1px solid var(--border); background: var(--surface); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
   .logo { font-family: 'DM Serif Display', serif; font-size: 26px; letter-spacing: -0.5px; color: var(--text); }
   .logo-sub { font-size: 12px; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
   .header-btns { margin-left: auto; display: flex; gap: 8px; }
   .help-btn { padding: 6px 14px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; }
   .help-btn:hover { background: var(--bg); color: var(--text); }
+  .sound-btn { padding: 6px 10px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); font-size: 15px; cursor: pointer; line-height: 1; }
+  .sound-btn:hover { background: var(--bg); }
+  .sound-btn.muted { opacity: 0.55; }
   .streak-bar { width: 100%; background: var(--amber-bg); border-bottom: 1px solid var(--amber-border); padding: 8px 1rem; text-align: center; font-size: 13px; color: var(--amber-text); font-weight: 500; display: none; }
   .streak-bar.show { display: block; }
   .daily-badge { display: inline-block; background: var(--blue-bg); border: 1px solid var(--blue-border); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--blue-text); font-weight: 500; text-align: center; margin-bottom: 1rem; width: 100%; }
@@ -271,6 +275,87 @@
   .pl-rule { font-size: 12px; color: #b8b4ae; margin-top: 1.5rem; text-align: center; }
   .pl-url { font-size: 11px; color: #b8b4ae; margin-top: 0.5rem; text-align: center; letter-spacing: 0.08em; }
 
+
+  /* MAIN LAYOUT (desktop: leaderboard left, game centre) */
+  .main-layout { width: 100%; max-width: 920px; margin: 0 auto; padding: 1.25rem 1rem 2rem; display: grid; grid-template-columns: 300px 480px; gap: 28px; align-items: start; justify-content: center; }
+  @media (max-width: 840px) {
+    .main-layout { grid-template-columns: 1fr; max-width: 480px; gap: 1rem; }
+    .main-layout .game { order: 1; }
+    .main-layout .leaderboard-section { order: 2; }
+  }
+
+  /* LEADERBOARD */
+  .leaderboard-section { width: 100%; padding: 0; margin: 0; position: sticky; top: 1rem; }
+  @media (max-width: 840px) { .leaderboard-section { position: static; } }
+  .lb-intro { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); margin-bottom: 0.75rem; line-height: 1.3; letter-spacing: -0.3px; }
+  .lb-grid { display: flex; flex-direction: column; gap: 12px; }
+  .lb-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.1rem 1.1rem 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+  .lb-header { display: flex; align-items: center; gap: 8px; margin-bottom: 0.25rem; }
+  .lb-icon { font-size: 18px; }
+  .lb-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--text); }
+  .lb-date { font-size: 11px; color: var(--text-hint); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .lb-list { list-style: none; padding: 0; margin: 0; }
+  .lb-list li { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--bg); font-size: 13px; }
+  .lb-list li:last-child { border-bottom: none; }
+  .lb-list li.is-you { background: var(--blue-bg); margin: 0 -0.5rem; padding: 7px 0.5rem; border-radius: var(--radius); border-bottom-color: transparent; }
+  .lb-rank { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-hint); min-width: 26px; font-weight: 600; }
+  .lb-rank.medal { font-size: 16px; font-family: 'DM Sans', sans-serif; }
+  .lb-rank.gold { color: #d4a017; }
+  .lb-rank.silver { color: #9ca3af; }
+  .lb-rank.bronze { color: #b8754a; }
+  .lb-name { flex: 1; color: var(--text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lb-score { font-family: 'DM Mono', monospace; color: var(--text-muted); font-size: 12px; white-space: nowrap; }
+  .lb-level-dot { font-size: 10px; padding: 1px 7px; border-radius: 10px; margin-left: 4px; letter-spacing: 0.03em; }
+  .lb-level-dot.easy { background: var(--amber-bg); color: var(--amber-text); }
+  .lb-level-dot.medium { background: var(--blue-bg); color: var(--blue-text); }
+  .lb-level-dot.hard { background: var(--pink-bg); color: var(--pink-text); }
+  .lb-empty { color: var(--text-hint); font-style: italic; font-size: 12px; justify-content: center; }
+  .lb-loading { color: var(--text-hint); font-size: 12px; justify-content: center; }
+  .lb-more-btn { width: 100%; margin-top: 0.75rem; padding: 8px; font-size: 12px; background: none; border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-muted); cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .lb-more-btn:hover { background: var(--bg); color: var(--text); }
+  .lb-you-banner { margin: 1rem 0; padding: 0.85rem 1rem; background: var(--blue-bg); border: 1px solid var(--blue-border); border-radius: var(--radius); font-size: 13px; color: var(--blue-text); text-align: center; display: none; }
+  .lb-you-banner.show { display: block; }
+  .lb-you-banner strong { font-family: 'DM Mono', monospace; }
+
+  /* NICKNAME CAPTURE (in win modal) */
+  .nickname-capture { margin-bottom: 1rem; padding: 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); }
+  .nc-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-hint); margin-bottom: 0.35rem; }
+  .nc-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 0.25rem; }
+  .nc-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 0.75rem; line-height: 1.5; }
+  .nc-input { width: 100%; padding: 10px 12px; font-size: 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); font-family: 'DM Sans', sans-serif; margin-bottom: 8px; outline: none; }
+  .nc-input:focus { border-color: var(--green-border); box-shadow: 0 0 0 3px rgba(126,203,132,0.15); }
+  .nc-submit-btn { width: 100%; padding: 10px; border: 1px solid var(--green-border); background: var(--green-bg); border-radius: var(--radius); color: var(--green-text); font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .nc-submit-btn:hover { opacity: 0.9; }
+  .nc-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .nc-msg { font-size: 12px; text-align: center; min-height: 16px; margin-top: 6px; }
+  .nc-msg.ok { color: var(--green-text); }
+  .nc-msg.err { color: var(--red-text); }
+  .nc-submitted { padding: 0.85rem 1rem; background: var(--green-bg); border: 1px solid var(--green-border); border-radius: var(--radius); color: var(--green-text); font-size: 13px; text-align: center; margin-bottom: 1rem; }
+  .nc-submitted strong { font-family: 'DM Mono', monospace; }
+
+  /* WORD DEFINITION POPUP */
+  .wbadge, .cw .w, .optimal-word, .rc-chain-word, .rc-pair-word { cursor: help; transition: filter 0.1s; }
+  .wbadge:hover, .cw .w:hover, .optimal-word:hover, .rc-chain-word:hover, .rc-pair-word:hover { filter: brightness(0.94); }
+  .def-popup { position: absolute; z-index: 200; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 0.9rem 1rem; max-width: 300px; box-shadow: 0 10px 28px rgba(0,0,0,0.14); font-family: 'DM Sans', sans-serif; font-size: 13px; line-height: 1.5; animation: defPop 0.16s ease-out; }
+  @keyframes defPop { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  .def-word { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 3px; letter-spacing: 0.08em; padding-right: 20px; }
+  .def-phonetic { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; font-style: italic; }
+  .def-meaning-block { margin-bottom: 8px; }
+  .def-meaning-block:last-child { margin-bottom: 0; }
+  .def-pos { font-size: 10px; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 3px; }
+  .def-meaning { color: var(--text); }
+  .def-close { position: absolute; top: 6px; right: 8px; background: none; border: none; font-size: 18px; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 0; width: 22px; height: 22px; }
+  .def-close:hover { color: var(--text); }
+  .def-loading { color: var(--text-muted); font-style: italic; font-size: 13px; }
+  .def-error { color: var(--text-muted); font-size: 12px; font-style: italic; }
+
+  /* WIN CELEBRATION ANIMATIONS */
+  @keyframes winPop { 0% { transform: scale(0.7); opacity: 0; } 60% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes starsPop { 0% { transform: scale(0.5) rotate(-8deg); opacity: 0; letter-spacing: 0; } 60% { transform: scale(1.15) rotate(4deg); opacity: 1; letter-spacing: 4px; } 100% { transform: scale(1) rotate(0); opacity: 1; letter-spacing: 3px; } }
+  @keyframes ratingWiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
+  #win-overlay.open #win-modal-title { animation: winPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); transform-origin: center; }
+  #win-overlay.open .rc-rating { animation: starsPop 0.7s 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both; display: inline-block; }
+
 </style>
 </head>
 <body>
@@ -315,6 +400,16 @@
     <button class="modal-close" onclick="document.getElementById('win-overlay').classList.remove('open')">x</button>
     <div class="modal-title" id="win-modal-title">Chain complete!</div>
     <p style="font-size:14px;color:var(--text-muted);margin-bottom:1.25rem;" id="win-modal-msg"></p>
+    <div class="nickname-capture" id="nickname-capture" style="display:none">
+      <div class="nc-label">Claim your spot</div>
+      <div class="nc-title" id="nc-title">Add yourself to today's leaderboard</div>
+      <div class="nc-sub" id="nc-sub">Enter a nickname — no account needed.</div>
+      <input class="nc-input" id="nc-nickname" placeholder="Your nickname (max 20 chars)" maxlength="20" autocomplete="off" />
+      <input class="nc-input" id="nc-school" placeholder="School name (optional — adds you to the school board)" maxlength="80" autocomplete="off" />
+      <button class="nc-submit-btn" id="nc-submit" onclick="onSubmitNickname()">Add me to the board</button>
+      <div class="nc-msg" id="nc-msg"></div>
+    </div>
+    <div class="nc-submitted" id="nc-submitted" style="display:none"></div>
     <div class="stats-grid" id="stats-grid"></div>
     <div class="stats-section-title">by level</div>
     <div class="level-stats" id="level-stats"></div>
@@ -356,6 +451,7 @@
   <span class="logo">Word Chain</span>
   <span class="logo-sub">Daily puzzle</span>
   <div class="header-btns">
+    <button class="sound-btn" id="sound-btn" onclick="toggleSound()" title="Toggle sound">🔊</button>
     <button class="for-teachers-btn" onclick="document.getElementById('teachers-section').scrollIntoView({behavior:'smooth'})">For Teachers</button>
     <button class="practice-btn" onclick="startPractice()">Practice</button>
     <button class="print-btn" onclick="printPuzzle()">Print puzzle</button>
@@ -370,6 +466,36 @@
 
 <div class="practice-banner" id="practice-banner">Practice mode — results don't count toward your streak &nbsp;·&nbsp; <button onclick="exitPractice()" style="background:none;border:none;color:var(--blue-text);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:underline;">exit</button></div>
 
+
+<div class="main-layout">
+<section class="leaderboard-section" id="leaderboard-section">
+  <p class="lb-intro">🏆 Today's leaderboards</p>
+  <div class="lb-you-banner" id="lb-you-banner"></div>
+  <div class="lb-grid">
+    <div class="lb-card">
+      <div class="lb-header">
+        <span class="lb-icon">🏆</span>
+        <span class="lb-title">Top players</span>
+      </div>
+      <div class="lb-date" id="lb-date-players">Today</div>
+      <ol class="lb-list" id="lb-players">
+        <li class="lb-loading">Loading…</li>
+      </ol>
+      <button class="lb-more-btn" id="lb-players-more" onclick="toggleBoard('players')" style="display:none">See top 50</button>
+    </div>
+    <div class="lb-card">
+      <div class="lb-header">
+        <span class="lb-icon">🎓</span>
+        <span class="lb-title">Top schools</span>
+      </div>
+      <div class="lb-date" id="lb-date-schools">Today</div>
+      <ol class="lb-list" id="lb-schools">
+        <li class="lb-loading">Loading…</li>
+      </ol>
+      <button class="lb-more-btn" id="lb-schools-more" onclick="toggleBoard('schools')" style="display:none">See top 50</button>
+    </div>
+  </div>
+</section>
 
 <div class="game">
   <div class="daily-badge" id="daily-badge">Loading today's puzzle...</div>
@@ -404,6 +530,7 @@
     <button class="undo-btn" onclick="undo()">undo last</button>
     <div class="hbar" id="hbar">Change one letter from <strong id="cur-hint">CAT</strong></div>
     <div class="rule" id="rule-txt">All 3-letter words · one letter changes per step</div>
+    <div class="rule" style="margin-top:4px;opacity:0.7">💡 Tap any word to see its meaning</div>
     <div class="hint-section" id="hint-section">
       <button class="hint-btn" onclick="useHint()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -428,25 +555,33 @@
     <button class="new-puzzle-btn" id="done-new-btn" style="display:none" onclick="startPractice()">Try a practice puzzle</button>
   </div>
 </div>
+</div>
 
 
 <section class="teachers-section" id="teachers-section">
   <div class="teachers-card">
     <div class="teachers-header">
       <span class="teachers-icon">🎓</span>
-      <span class="teachers-title">For Teachers</span>
+      <span class="teachers-title">For Teachers — Primary &amp; Secondary</span>
     </div>
-    <p class="teachers-intro">Word Chain is used in classrooms as a fun, effective vocabulary and spelling activity. Students love the competitive element of finding the shortest path — and they don't realise they're doing literacy work.</p>
+    <p class="teachers-intro">Word Chain works across Key Stages. The three difficulty levels map naturally to different ages and abilities — pick the level that suits your class, or let students choose their own. Competitive, focused, and (quietly) doing real literacy work.</p>
     <div class="teachers-benefits">
       <div class="teachers-benefit"><span class="tb-icon">✓</span><span>Free, no login or app download required — just share a link</span></div>
       <div class="teachers-benefit"><span class="tb-icon">✓</span><span>Works on any device — school iPads, Chromebooks, laptops and phones</span></div>
-      <div class="teachers-benefit"><span class="tb-icon">✓</span><span>Three difficulty levels suit mixed abilities — 3, 4 and 5-letter words</span></div>
+      <div class="teachers-benefit"><span class="tb-icon">✓</span><span>Three difficulty levels suit mixed abilities across year groups</span></div>
       <div class="teachers-benefit"><span class="tb-icon">✓</span><span>Practice mode gives unlimited puzzles beyond the daily one — ideal for longer sessions</span></div>
       <div class="teachers-benefit"><span class="tb-icon">✓</span><span>After completing, players see the optimal shortest solution — great for class discussion</span></div>
+      <div class="teachers-benefit"><span class="tb-icon">✓</span><span>Live leaderboards with school names — kids compete with classmates and other schools</span></div>
       <div class="teachers-benefit"><span class="tb-icon">✓</span><span>Daily streak encourages students to return each day</span></div>
     </div>
     <div class="teachers-curriculum">
-      <p><strong>Curriculum links</strong> — Supports KS2 English: vocabulary development, spelling patterns, and word recognition. Encourages logical thinking and problem solving. Suitable for Years 4–6 as a starter activity, early finisher task, or homework challenge.</p>
+      <p><strong>Primary — KS2 (Years 3–6)</strong> — Easy (3-letter) and Medium (4-letter) puzzles support vocabulary, spelling patterns and word recognition. Ideal as a starter, early-finisher task, or homework. Pairs with the English National Curriculum's word-reading and spelling strands.</p>
+    </div>
+    <div class="teachers-curriculum" style="background:var(--pink-bg);border-color:var(--pink-border);">
+      <p style="color:var(--pink-text);"><strong>Secondary — KS3 &amp; KS4 (Years 7–11)</strong> — Hard (5-letter) puzzles extend vocabulary range, develop orthographic fluency, and reinforce morphological awareness. Useful as a warm-up for English lessons, a retrieval activity, or GCSE-level revision for etymology and word-building. Form tutors can run the daily puzzle in registration as a whole-class challenge.</p>
+    </div>
+    <div class="teachers-curriculum" style="background:var(--green-bg);border-color:var(--green-border);">
+      <p style="color:var(--green-text);"><strong>SEN &amp; intervention groups</strong> — The single-letter-change structure makes phonological differences visible, which supports dyslexic and SpLD learners. Practice mode lets you run as many puzzles as needed at a consistent difficulty.</p>
     </div>
     <button class="teachers-copy-btn" onclick="copyTeacherLink()">📋 Copy classroom link to share</button>
     <div class="teachers-copied" id="teachers-copied"></div>
@@ -514,7 +649,441 @@
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script>
+// ── SUPABASE LEADERBOARD ─────────────────────────────────────────
+const SUPABASE_URL = 'https://imptxioosunhhrwivecy.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_A_ONpPPq6WKhGZ8HnUJZ4g_1pA2UKsR';
+const sb = (window.supabase && window.supabase.createClient)
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null;
+
+// ── WORD DEFINITIONS (tap any word to see meaning) ─────────────
+const _defCache = new Map();
+
+async function fetchDefinition(word){
+  const key = String(word||'').toUpperCase().replace(/[^A-Z]/g,'');
+  if(!key) return null;
+  if(_defCache.has(key)) return _defCache.get(key);
+  try {
+    const r = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(key.toLowerCase()));
+    if(!r.ok){ _defCache.set(key, null); return null; }
+    const data = await r.json();
+    if(!Array.isArray(data) || !data.length){ _defCache.set(key, null); return null; }
+    const entry = data[0];
+    const phonetic = entry.phonetic || ((entry.phonetics||[]).find(p=>p.text)||{}).text || '';
+    const meanings = (entry.meanings||[]).slice(0, 2).map(m => ({
+      pos: m.partOfSpeech || '',
+      def: ((m.definitions||[])[0]||{}).definition || ''
+    })).filter(m => m.def);
+    const result = { word: entry.word || key.toLowerCase(), phonetic, meanings };
+    _defCache.set(key, result);
+    return result;
+  } catch(e){ return null; }
+}
+
+function closeDefPopup(){
+  const ex = document.getElementById('def-popup');
+  if(ex) ex.remove();
+}
+
+function positionDefPopup(popup, anchor){
+  const rect = anchor.getBoundingClientRect();
+  const pw = popup.offsetWidth;
+  const ph = popup.offsetHeight;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  let x = rect.left + rect.width/2 - pw/2 + window.scrollX;
+  let y = rect.bottom + 8 + window.scrollY;
+  if(x < 8) x = 8;
+  if(x + pw > vw - 8) x = vw - pw - 8;
+  if(rect.bottom + ph + 12 > vh){
+    y = rect.top - ph - 8 + window.scrollY;
+  }
+  popup.style.left = x + 'px';
+  popup.style.top = y + 'px';
+}
+
+async function showDefinition(word, anchorEl){
+  closeDefPopup();
+  const popup = document.createElement('div');
+  popup.className = 'def-popup';
+  popup.id = 'def-popup';
+  popup.innerHTML = '<button class="def-close" onclick="closeDefPopup()">×</button>'+
+    '<div class="def-word">'+escHtml(word)+'</div>'+
+    '<div class="def-loading">Looking up…</div>';
+  document.body.appendChild(popup);
+  positionDefPopup(popup, anchorEl);
+  const def = await fetchDefinition(word);
+  if(!document.getElementById('def-popup')) return;
+  if(!def || !def.meanings.length){
+    popup.innerHTML = '<button class="def-close" onclick="closeDefPopup()">×</button>'+
+      '<div class="def-word">'+escHtml(word)+'</div>'+
+      '<div class="def-error">No definition found for this word.</div>';
+    positionDefPopup(popup, anchorEl);
+    return;
+  }
+  const meaningsHtml = def.meanings.map(m =>
+    '<div class="def-meaning-block">'+
+      '<div class="def-pos">'+escHtml(m.pos)+'</div>'+
+      '<div class="def-meaning">'+escHtml(m.def)+'</div>'+
+    '</div>'
+  ).join('');
+  popup.innerHTML = '<button class="def-close" onclick="closeDefPopup()">×</button>'+
+    '<div class="def-word">'+escHtml(def.word.toUpperCase())+'</div>'+
+    (def.phonetic ? '<div class="def-phonetic">'+escHtml(def.phonetic)+'</div>' : '')+
+    meaningsHtml;
+  positionDefPopup(popup, anchorEl);
+}
+
+// Global delegation — tap any puzzle word for its definition
+document.addEventListener('click', function(e){
+  const sel = '.wbadge, .cw .w, .optimal-word, .rc-chain-word, .rc-pair-word';
+  const wordEl = e.target.closest(sel);
+  if(wordEl){
+    const raw = (wordEl.textContent||'').trim();
+    // Filter out the arrow/divider elements and empty spans
+    const word = raw.replace(/[^A-Za-z]/g, '');
+    if(word.length >= 2){
+      showDefinition(word, wordEl);
+      e.stopPropagation();
+      return;
+    }
+  }
+  if(!e.target.closest('#def-popup')){
+    closeDefPopup();
+  }
+});
+
+// ── SOUND ──────────────────────────────────────────────────────
+let _audioCtx = null;
+function getAudioCtx(){
+  if(!_audioCtx){
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return null;
+    _audioCtx = new AC();
+  }
+  if(_audioCtx.state === 'suspended') _audioCtx.resume();
+  return _audioCtx;
+}
+function soundOn(){try{return localStorage.getItem('wc_sound')!=='off';}catch(e){return true;}}
+function setSoundOn(on){try{localStorage.setItem('wc_sound', on?'on':'off');}catch(e){}}
+function toggleSound(){
+  const nowOn = !soundOn();
+  setSoundOn(nowOn);
+  updateSoundBtn();
+  // Quick feedback click so user hears the change
+  if(nowOn) playTone(880, 0.08, 0.15, 'sine');
+}
+function updateSoundBtn(){
+  const btn = document.getElementById('sound-btn');
+  if(!btn) return;
+  if(soundOn()){ btn.textContent = '🔊'; btn.classList.remove('muted'); btn.title = 'Sound on — click to mute'; }
+  else { btn.textContent = '🔇'; btn.classList.add('muted'); btn.title = 'Sound off — click to unmute'; }
+}
+function playTone(freq, duration, volume, type, delayMs){
+  if(!soundOn()) return;
+  const ctx = getAudioCtx();
+  if(!ctx) return;
+  const start = ctx.currentTime + (delayMs||0)/1000;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type || 'sine';
+  osc.frequency.setValueAtTime(freq, start);
+  gain.gain.setValueAtTime(0, start);
+  gain.gain.linearRampToValueAtTime(volume, start + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.start(start); osc.stop(start + duration + 0.05);
+}
+function playSparkle(startDelay){
+  // High, decaying sparkle — layered with the main melody for the 3-star finish
+  [1568, 1975, 2349].forEach((f,i)=>playTone(f, 0.4, 0.08, 'triangle', startDelay + i*60));
+}
+function playSolveSound(stars){
+  if(!soundOn()) return;
+  if(stars >= 3){
+    // Three-star fanfare: C5, E5, G5, C6 rising arpeggio, then a sparkle tail
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((f,i)=>playTone(f, 0.45, 0.22, 'triangle', i*95));
+    playTone(1318.51, 0.7, 0.18, 'sine', 380);  // held E6 over the top
+    playSparkle(550);
+  } else if(stars >= 2){
+    // Two-star pleasant chime: C5, G5
+    playTone(523.25, 0.3, 0.22, 'triangle', 0);
+    playTone(783.99, 0.55, 0.20, 'triangle', 140);
+  } else if(stars >= 1){
+    // One-star single warm ding
+    playTone(783.99, 0.45, 0.18, 'sine', 0);
+  }
+}
+
+// ── CELEBRATION ────────────────────────────────────────────────
+function celebrate(stars){
+  // Sound fires alongside the confetti
+  playSolveSound(stars);
+  if(typeof confetti === 'undefined') return;
+  const WC_COLORS = ['#f5c842','#91b8f5','#e8a0c8','#7ecb84','#ffd93d','#6bcfff','#ff9f7a'];
+  let starShape = null;
+  try { if(confetti.shapeFromText) starShape = confetti.shapeFromText({text:'⭐', scalar:2}); } catch(e){}
+  if(stars >= 3){
+    // Three stars — BIG, multi-wave celebration lasting ~2 seconds
+    // Wave 1: huge centre burst
+    confetti({particleCount:180, spread:130, startVelocity:55, origin:{y:0.55}, colors:WC_COLORS, scalar:1.2, ticks:260});
+    // Wave 2: left cannon
+    setTimeout(()=>confetti({particleCount:110, angle:60, spread:75, startVelocity:60, origin:{x:0,y:0.75}, colors:WC_COLORS, scalar:1.1, ticks:260}), 200);
+    // Wave 3: right cannon
+    setTimeout(()=>confetti({particleCount:110, angle:120, spread:75, startVelocity:60, origin:{x:1,y:0.75}, colors:WC_COLORS, scalar:1.1, ticks:260}), 400);
+    // Wave 4: star rain from the top
+    if(starShape){
+      setTimeout(()=>confetti({particleCount:55, spread:160, startVelocity:25, origin:{y:0.1}, shapes:[starShape], scalar:1.8, gravity:0.6, ticks:320}), 650);
+    }
+    // Wave 5: follow-up centre burst
+    setTimeout(()=>confetti({particleCount:90, spread:100, startVelocity:40, origin:{y:0.6}, colors:WC_COLORS, scalar:1.0}), 1100);
+    // Wave 6: final star sprinkle
+    if(starShape){
+      setTimeout(()=>confetti({particleCount:40, spread:140, startVelocity:20, origin:{y:0.2}, shapes:[starShape], scalar:1.5, gravity:0.5, ticks:280}), 1500);
+    }
+  } else if(stars >= 2){
+    // Two stars — a solid double celebration
+    confetti({particleCount:110, spread:95, startVelocity:45, origin:{y:0.55}, colors:WC_COLORS, scalar:1.1});
+    setTimeout(()=>confetti({particleCount:70, angle:60, spread:65, origin:{x:0,y:0.7}, colors:WC_COLORS, scalar:1.0}), 220);
+    setTimeout(()=>confetti({particleCount:70, angle:120, spread:65, origin:{x:1,y:0.7}, colors:WC_COLORS, scalar:1.0}), 420);
+    if(starShape){
+      setTimeout(()=>confetti({particleCount:20, spread:120, startVelocity:22, origin:{y:0.2}, shapes:[starShape], scalar:1.4, gravity:0.6}), 700);
+    }
+  } else if(stars >= 1){
+    // One star — a gentle but still visible pop
+    confetti({particleCount:60, spread:65, startVelocity:35, origin:{y:0.65}, colors:['#91b8f5','#f5c842','#7ecb84'], scalar:0.95});
+    setTimeout(()=>confetti({particleCount:30, spread:45, origin:{y:0.7}, colors:['#f5c842','#91b8f5']}), 300);
+  }
+  // Zero stars — no confetti/sound, but stats still show (kept encouraging)
+}
+
+function isoDate(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function getSavedNickname(){try{return localStorage.getItem('wc_nick')||'';}catch(e){return'';}}
+function saveNickname(n){try{localStorage.setItem('wc_nick',n);}catch(e){}}
+function getSavedSchool(){try{return localStorage.getItem('wc_school')||'';}catch(e){return'';}}
+function saveSchool(s){try{localStorage.setItem('wc_school',s);}catch(e){}}
+function checkSubmitted(lvl){try{return localStorage.getItem('wc_submitted_'+lvl+'_'+isoDate())==='1';}catch(e){return false;}}
+function markSubmitted(lvl){try{localStorage.setItem('wc_submitted_'+lvl+'_'+isoDate(),'1');}catch(e){}}
+function getSubmittedRowId(lvl){try{return localStorage.getItem('wc_submitted_id_'+lvl+'_'+isoDate())||'';}catch(e){return'';}}
+function setSubmittedRowId(lvl,id){try{localStorage.setItem('wc_submitted_id_'+lvl+'_'+isoDate(),id);}catch(e){}}
+
+async function submitToLeaderboard(nickname, school){
+  if(!sb||!currentPuzzle||practiceMode)return {error:'not_available'};
+  const steps = chain.length-1+hintsUsed;
+  const par = currentPuzzle.par;
+  let stars; if(steps<=par-2)stars=3; else if(steps<=par)stars=2; else stars=1;
+  const entry = {
+    nickname: String(nickname||'').trim().substring(0,20),
+    puzzle_date: isoDate(),
+    level: level,
+    steps: steps,
+    par: par,
+    hints_used: hintsUsed,
+    stars: stars,
+    school_name: school ? String(school).trim().substring(0,80) : null
+  };
+  if(!entry.nickname)return {error:'no_nickname'};
+  try {
+    const {data, error} = await sb.from('leaderboard_entries').insert(entry).select().single();
+    if(error){console.warn('leaderboard insert error',error);return {error:error.message||'insert_failed'};}
+    markSubmitted(level);
+    setSubmittedRowId(level, data.id);
+    saveNickname(entry.nickname);
+    if(entry.school_name) saveSchool(entry.school_name);
+    return {data};
+  } catch(e){console.warn('leaderboard threw',e);return {error:'threw'};}
+}
+
+async function fetchTopPlayers(limit){
+  if(!sb)return [];
+  limit = limit||10;
+  try {
+    const {data, error} = await sb.from('leaderboard_entries')
+      .select('id,nickname,level,steps,par,hints_used,stars,school_name,created_at')
+      .eq('puzzle_date', isoDate())
+      .order('stars', {ascending:false})
+      .order('steps', {ascending:true})
+      .order('hints_used', {ascending:true})
+      .order('created_at', {ascending:true})
+      .limit(limit);
+    if(error){console.warn('fetch players error',error);return[];}
+    return data||[];
+  } catch(e){console.warn('fetch players threw',e);return[];}
+}
+
+async function fetchTopSchools(limit){
+  if(!sb)return [];
+  limit = limit||10;
+  try {
+    const {data, error} = await sb.from('leaderboard_entries')
+      .select('school_name,stars,steps,par,hints_used')
+      .eq('puzzle_date', isoDate())
+      .not('school_name','is',null);
+    if(error){console.warn('fetch schools error',error);return[];}
+    const map = new Map();
+    (data||[]).forEach(e=>{
+      const k = (e.school_name||'').trim();
+      if(!k)return;
+      const g = map.get(k)||{school_name:k, players:0, total_stars:0};
+      g.players++;
+      g.total_stars += (e.stars||0);
+      map.set(k, g);
+    });
+    return Array.from(map.values())
+      .sort((a,b)=>b.total_stars-a.total_stars || b.players-a.players)
+      .slice(0, limit);
+  } catch(e){console.warn('fetch schools threw',e);return[];}
+}
+
+function levelDot(lvl){return '<span class="lb-level-dot '+lvl+'">'+lvl+'</span>';}
+function escHtml(s){return String(s||'').replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));}
+
+let lbPlayersExpanded = false;
+let lbSchoolsExpanded = false;
+
+async function renderPlayersBoard(){
+  const el = document.getElementById('lb-players');
+  if(!el)return;
+  const limit = lbPlayersExpanded ? 50 : 10;
+  const rows = await fetchTopPlayers(limit);
+  const myId = getSubmittedRowId('easy')||getSubmittedRowId('medium')||getSubmittedRowId('hard');
+  if(!rows.length){
+    el.innerHTML = '<li class="lb-empty">Be the first to solve today!</li>';
+    document.getElementById('lb-players-more').style.display = 'none';
+    return;
+  }
+  const medals = ['🥇','🥈','🥉'];
+  const medalCls = ['gold','silver','bronze'];
+  el.innerHTML = rows.map((r,i)=>{
+    const isMe = r.id===myId;
+    const score = r.steps+' steps · '+r.stars+'★';
+    const rankHtml = i<3
+      ? '<span class="lb-rank medal '+medalCls[i]+'">'+medals[i]+'</span>'
+      : '<span class="lb-rank">'+(i+1)+'.</span>';
+    return '<li'+(isMe?' class="is-you"':'')+'>'+
+      rankHtml+
+      '<span class="lb-name">'+escHtml(r.nickname)+levelDot(r.level)+'</span>'+
+      '<span class="lb-score">'+score+'</span>'+
+    '</li>';
+  }).join('');
+  document.getElementById('lb-players-more').style.display = (!lbPlayersExpanded && rows.length>=10) ? 'block' : 'none';
+  if(lbPlayersExpanded) document.getElementById('lb-players-more').textContent = 'Show top 10';
+  else document.getElementById('lb-players-more').textContent = 'See top 50';
+}
+
+async function renderSchoolsBoard(){
+  const el = document.getElementById('lb-schools');
+  if(!el)return;
+  const limit = lbSchoolsExpanded ? 50 : 10;
+  const rows = await fetchTopSchools(limit);
+  if(!rows.length){
+    el.innerHTML = '<li class="lb-empty">No schools yet — teachers, add your school name when you solve today\'s puzzle!</li>';
+    document.getElementById('lb-schools-more').style.display = 'none';
+    return;
+  }
+  const medals = ['🥇','🥈','🥉'];
+  const medalCls = ['gold','silver','bronze'];
+  el.innerHTML = rows.map((r,i)=>{
+    const score = r.total_stars+'★ · '+r.players+' player'+(r.players===1?'':'s');
+    const rankHtml = i<3
+      ? '<span class="lb-rank medal '+medalCls[i]+'">'+medals[i]+'</span>'
+      : '<span class="lb-rank">'+(i+1)+'.</span>';
+    return '<li>'+
+      rankHtml+
+      '<span class="lb-name">'+escHtml(r.school_name)+'</span>'+
+      '<span class="lb-score">'+score+'</span>'+
+    '</li>';
+  }).join('');
+  document.getElementById('lb-schools-more').style.display = (!lbSchoolsExpanded && rows.length>=10) ? 'block' : 'none';
+  if(lbSchoolsExpanded) document.getElementById('lb-schools-more').textContent = 'Show top 10';
+  else document.getElementById('lb-schools-more').textContent = 'See top 50';
+}
+
+function toggleBoard(which){
+  if(which==='players'){lbPlayersExpanded = !lbPlayersExpanded; renderPlayersBoard();}
+  else {lbSchoolsExpanded = !lbSchoolsExpanded; renderSchoolsBoard();}
+}
+
+async function renderLeaderboards(){
+  await Promise.all([renderPlayersBoard(), renderSchoolsBoard()]);
+  await updateYouBanner();
+}
+
+async function updateYouBanner(){
+  const banner = document.getElementById('lb-you-banner');
+  if(!banner||!sb)return;
+  const myId = getSubmittedRowId('easy')||getSubmittedRowId('medium')||getSubmittedRowId('hard');
+  if(!myId){banner.classList.remove('show');return;}
+  // Find the rank of this row in today's standings
+  try {
+    const mine = await sb.from('leaderboard_entries').select('nickname,level,steps,hints_used,stars,created_at').eq('id',myId).single();
+    if(mine.error||!mine.data){banner.classList.remove('show');return;}
+    const me = mine.data;
+    // Get everyone today and compute rank locally
+    const {data:all} = await sb.from('leaderboard_entries')
+      .select('id,stars,steps,hints_used,created_at')
+      .eq('puzzle_date', isoDate())
+      .order('stars', {ascending:false})
+      .order('steps', {ascending:true})
+      .order('hints_used', {ascending:true})
+      .order('created_at', {ascending:true});
+    const rank = (all||[]).findIndex(r=>r.id===myId)+1;
+    const total = (all||[]).length;
+    if(rank>0){
+      banner.innerHTML = '<strong>'+escHtml(me.nickname)+'</strong> — you\'re rank <strong>'+rank+'</strong> of '+total+' today ('+me.steps+' steps, '+me.stars+'★)';
+      banner.classList.add('show');
+    }
+  } catch(e){console.warn('rank compute',e);}
+}
+
+async function onSubmitNickname(){
+  const nickEl = document.getElementById('nc-nickname');
+  const schoolEl = document.getElementById('nc-school');
+  const btn = document.getElementById('nc-submit');
+  const msg = document.getElementById('nc-msg');
+  const nick = (nickEl.value||'').trim();
+  const school = (schoolEl.value||'').trim();
+  if(!nick){msg.textContent='Enter a nickname first';msg.className='nc-msg err';return;}
+  btn.disabled = true; msg.textContent = 'Submitting…'; msg.className='nc-msg';
+  const res = await submitToLeaderboard(nick, school);
+  if(res.error){
+    msg.textContent = 'Submit failed — try again in a moment';
+    msg.className = 'nc-msg err';
+    btn.disabled = false;
+    return;
+  }
+  // Success — swap UI
+  document.getElementById('nickname-capture').style.display = 'none';
+  const sub = document.getElementById('nc-submitted');
+  sub.innerHTML = '✓ On the board as <strong>'+escHtml(nick)+'</strong>'+(school?' — '+escHtml(school):'');
+  sub.style.display = 'block';
+  // Refresh boards so the user sees their name appear
+  renderLeaderboards();
+}
+
+function prepNicknameCapture(){
+  const capture = document.getElementById('nickname-capture');
+  const submitted = document.getElementById('nc-submitted');
+  if(!capture)return;
+  if(practiceMode){capture.style.display='none';submitted.style.display='none';return;}
+  if(checkSubmitted(level)){
+    capture.style.display='none';
+    submitted.style.display='block';
+    submitted.innerHTML = '✓ You\'re on today\'s board';
+    return;
+  }
+  capture.style.display='block';
+  submitted.style.display='none';
+  document.getElementById('nc-nickname').value = getSavedNickname();
+  document.getElementById('nc-school').value = getSavedSchool();
+  document.getElementById('nc-msg').textContent = '';
+}
+
+
 const LEVELS={
   easy:{wordLen:3,puzzles:[{s:'CAT',e:'DOG',par:4,d:3},{s:'HOT',e:'ICE',par:4,d:3},{s:'SUN',e:'DIM',par:4,d:3},{s:'BAT',e:'FLY',par:4,d:3},{s:'MAN',e:'BOY',par:3,d:2},{s:'CUP',e:'POT',par:3,d:2},{s:'HAT',e:'WIG',par:4,d:2},{s:'BIG',e:'FAT',par:4,d:2},{s:'WET',e:'DRY',par:4,d:3},{s:'OLD',e:'NEW',par:4,d:3},{s:'TOP',e:'BOT',par:3,d:3},{s:'SIT',e:'RAN',par:4,d:3},{s:'PEG',e:'HOD',par:4,d:3},{s:'WAR',e:'PEA',par:4,d:3},{s:'FIN',e:'TOE',par:4,d:3}],
   words:new Set(['CAT','BAT','BIT','BOT','BOG','DOG','HOT','HOG','HIT','HID','AID','ICE','SUN','GUN','GUT','CUP','CUT','CAP','MAP','MAT','MAD','BAD','BAG','FAT','FLY','FIT','SIT','SAT','HAT','HAD','HAS','WAS','WIG','WIN','TIN','TAN','MAN','MEN','HEN','HEM','HAM','JAM','JAR','BAR','BAN','BOY','COY','COT','POT','POP','MOP','MOB','MOD','SOW','SOB','SOD','SOT','SET','NET','MET','WET','BET','BED','RED','ROD','ROT','RAT','RAN','RAM','DIM','DIP','TIP','TOP','TON','TOT','TOE','FOE','FOG','LOG','LOT','LOW','BOW','ROW','ROB','RUB','RUT','NUT','NOT','NEW','SEW','SEA','PEA','PEG','LEG','LET','LED','FED','FEW','DEW','DEN','PEN','PIN','PIE','TIE','DIE','LIE','LIP','SIP','ZIP','ZAP','LAP','LAD','LAG','NAG','NAP','SAP','SAG','SAW','PAW','LAW','WAX','WAR','FAN','PAN','PAD','OLD','ODD','ANT','APE','AGE','ACE','OWL','GEL','GAP','GAB','CAB','CAD','CAN','COB','COD','COG','COP','COT','COW','CUB','TAB','TAD','TAG','TAP','TAR','TON','TAX','YAM','YAP','YEW','YET','DRY','BIG','WIG','PIG','JIG','RIG','DIG','FIG','HOD','NOD','GOD','BOD','POD','ADO','AGO','ALE','ALL','ARC','ARE','ARK','ARM','ART','ASH','ASK','ATE','AWE','AXE','AYE','BEE','BOO','BUG','BUN','BUS','BUT','BUY','CAR','COO','CRY','CUE','DAB','DAD','DAM','DAY','DID','DOE','DUB','DUG','DUN','DUO','DYE','EAR','EAT','EEL','EGG','ELF','ELK','ELM','EMU','ERA','EVE','EWE','FAD','FAR','FAX','FAY','FEE','FEN','FEY','FIB','FIN','FIR','FIX','FLU','FOB','FRY','FUN','FUR','GAG','GAL','GAR','GAY','GEE','GEM','GET','GIN','GNU','GOB','GOT','GUM','GUY','GYM','HAG','HAP','HAW','HAY','HEP','HER','HEW','HEY','HIM','HIP','HIS','HOB','HOE','HOP','HOW','HUB','HUE','HUG','HUM','HUT','ICY','ILL','IMP','INK','INN','ION','IRE','ITS','IVY','JAB','JAG','JAW','JAY','JET','JIB','JOB','JOG','JOT','JOY','JUG','JUT','KEG','KID','KIT','LAB','LAX','LAY','LEA','LID','LIT','LOO','LOP','LUG','MAG','MAW','MAY','MEW','MID','MIX','MOO','MUD','MUG','NAB','NAY','NIB','NIT','NOB','NOG','NOR','NOW','NUN','OAF','OAK','OAR','OAT','ODE','OHM','OIL','OPT','ORB','ORE','OUR','OUT','OWE','OWN','PAL','PAP','PAR','PAT','PAX','PAY','PEE','PEP','PER','PEW','PLY','PUB','PUD','PUG','PUN','PUP','PUS','PUT','RAG','RAP','RAW','RAY','REB','REF','REP','RIB','RID','RIM','RIP','ROC','ROE','RUG','RUM','RUN','RYE','SAC','SAD','SEC','SEE','SEG','SHE','SHY','SIN','SIR','SIS','SKI','SKY','SLY','SON','SOP','SOY','SPA','SPY','STY','SUB','SUE','SUM','SUP','TAO','TAT','TAV','TAW','TEA','TEE','THO','THY','TIC','TOD','TOG','TOM','TOO','TOW','TOY','TRY','TUB','TUG','TUM','TUN','TWO','UGH','UMP','URN','USE','VAN','VAR','VAT','VIA','VIE','VOW','WAD','WAG','WAN','WAT','WAW','WAY','WEB','WED','WEE','WEN','WIS','WIT','WOE','WOK','WON','WOO','WOP','WOT','WOW','WRY','YAK','YAW','YEA','YEN','YEP','YES','YIN','YOB','YOU','YUK','YUM','ZAG','ZAX','ZED','ZEE','ZEN','ZIG','ZIT','ZOO'])},
@@ -753,8 +1322,16 @@ function showWinModal(steps,par,stats){
   document.getElementById('rc-streak').textContent=!practiceMode&&currentStreak.count>=2?'🔥 '+currentStreak.count+' day streak':'';
   document.getElementById('result-card').className='result-card '+level;
   document.getElementById('share-copied').textContent='';
+  prepNicknameCapture();
   document.getElementById('win-overlay').classList.add('open');
   document.getElementById('win-practice-btn').style.display=practiceMode?'block':'none';
+  // Celebrate! Star count based on steps vs par
+  let starsNum;
+  if(totalSteps<=par-2) starsNum=3;
+  else if(totalSteps<=par) starsNum=2;
+  else if(totalSteps<=par+2) starsNum=1;
+  else starsNum=0;
+  setTimeout(()=>celebrate(starsNum), 150);
 }
 
 
@@ -787,7 +1364,8 @@ function buildShareText(){
   const today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
   const streakLine=!practiceMode&&currentStreak.count>=2?'\n🔥 '+currentStreak.count+' day streak':'';
   const hintLine=hintsUsed>0?'\nHints: '+hintsUsed:'';
-  return 'Word Chain — '+today+'\n'+level.charAt(0).toUpperCase()+level.slice(1)+': '+currentPuzzle.s+' → '+currentPuzzle.e+'\n\n'+buildEmojiGrid()+'\n\n'+steps+' steps · par '+par+hintLine+'\n'+rating+streakLine+'\nwordchain-puzzle.com';
+  const challenge=practiceMode?'':'\n\nCan you beat it?';
+  return 'Word Chain — '+today+'\n'+level.charAt(0).toUpperCase()+level.slice(1)+': '+currentPuzzle.s+' → '+currentPuzzle.e+'\n\n'+buildEmojiGrid()+'\n\n'+rating+'\n'+steps+' steps · par '+par+hintLine+streakLine+challenge+'\n→ wordchain-puzzle.com';
 }
 
 
@@ -809,7 +1387,7 @@ function shareResult(){
 
 function copyTeacherLink(){
   const el=document.getElementById('teachers-copied');
-  const text='Word Chain — free daily word ladder puzzle for the classroom\nwordchain-puzzle.com\n\nStudents change one letter at a time to connect two words. Three difficulty levels, works on any device, no login needed. Great for vocabulary and spelling — Years 4–6.';
+  const text='Word Chain — free daily word ladder puzzle for the classroom\nwordchain-puzzle.com\n\nStudents change one letter at a time to connect two words. Three difficulty levels suit KS2, KS3 and KS4 — 3, 4 and 5-letter words. Live leaderboards with schools. Works on any device, no login needed. Great for vocabulary, spelling, and warm-up / starter activities.';
   navigator.clipboard.writeText(text).then(()=>{
     if(el)el.textContent='Copied! Ready to paste into an email or message.';
   }).catch(()=>{
@@ -989,4 +1567,34 @@ function printPuzzle() {
   window.print();
 }
 
-// ── ESL LINK COPY ─────────────────────────────────────────────�
+// ── ESL LINK COPY ──────────────────────────────────────────────
+function copyEslLink(){
+  const el = document.getElementById('esl-copied');
+  const text = 'Word Chain — free daily word ladder puzzle, perfect for ESL/EFL classrooms\nwordchain-puzzle.com\n\nStudents change one letter at a time to connect two words. Three difficulty levels suit A1–B2 learners. No login, no app — works instantly on any device in any country.';
+  navigator.clipboard.writeText(text).then(()=>{
+    if(el) el.textContent = 'Copied! Ready to paste into an email or message.';
+  }).catch(()=>{
+    if(el) el.textContent = 'Copy failed — try selecting the link manually.';
+  });
+}
+
+// ── PAGE INIT ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function(){
+  // Custom puzzle from URL? Otherwise load daily.
+  const customPuzzle = typeof parseUrlPuzzle === 'function' ? parseUrlPuzzle() : null;
+  if (customPuzzle && typeof loadCustomPuzzle === 'function') {
+    loadCustomPuzzle(customPuzzle.from, customPuzzle.to, customPuzzle.lvl);
+  } else {
+    setLevel(level);
+  }
+  // Streak bar
+  try { const s = loadStreak(); showStreakBar(s.count); } catch(e){}
+  // Sound button state
+  if (typeof updateSoundBtn === 'function') updateSoundBtn();
+  // Render leaderboards
+  if (typeof renderLeaderboards === 'function') renderLeaderboards();
+});
+</script>
+</body>
+</html>
+�
