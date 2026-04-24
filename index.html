@@ -287,7 +287,11 @@
   /* LEADERBOARD */
   .leaderboard-section { width: 100%; padding: 0; margin: 0; position: sticky; top: 1rem; }
   @media (max-width: 840px) { .leaderboard-section { position: static; } }
-  .lb-intro { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); margin-bottom: 0.75rem; line-height: 1.3; letter-spacing: -0.3px; }
+  .lb-intro { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); margin-bottom: 0.5rem; line-height: 1.3; letter-spacing: -0.3px; }
+  .lb-period-toggle { display: flex; gap: 0; margin-bottom: 0.75rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 3px; }
+  .lb-period-btn { flex: 1; padding: 7px 12px; border: none; background: transparent; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; border-radius: 7px; transition: all 0.15s; }
+  .lb-period-btn:hover { color: var(--text); }
+  .lb-period-btn.active { background: var(--blue-bg); color: var(--blue-text); }
   .lb-grid { display: flex; flex-direction: column; gap: 12px; }
   .lb-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.1rem 1.1rem 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
   .lb-header { display: flex; align-items: center; gap: 8px; margin-bottom: 0.25rem; }
@@ -332,6 +336,30 @@
   .nc-msg.err { color: var(--red-text); }
   .nc-submitted { padding: 0.85rem 1rem; background: var(--green-bg); border: 1px solid var(--green-border); border-radius: var(--radius); color: var(--green-text); font-size: 13px; text-align: center; margin-bottom: 1rem; }
   .nc-submitted strong { font-family: 'DM Mono', monospace; }
+
+  /* CHALLENGE BANNER + BUTTON + COMPARISON */
+  .challenge-banner { width: 100%; background: linear-gradient(90deg, var(--pink-bg) 0%, var(--amber-bg) 100%); border-bottom: 1px solid var(--pink-border); padding: 10px 1rem; font-size: 13px; color: var(--text); font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 10px; animation: slideDown 0.35s ease-out; }
+  @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .challenge-banner .ch-icon { font-size: 18px; flex-shrink: 0; }
+  .challenge-banner .ch-text { line-height: 1.4; }
+  .challenge-banner .ch-text strong { font-weight: 600; }
+  .challenge-banner .ch-close { background: none; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer; padding: 0 6px; line-height: 1; flex-shrink: 0; }
+  .challenge-banner .ch-close:hover { color: var(--text); }
+  .challenge-btn { width: 100%; padding: 12px; border-radius: var(--radius); border: 1px solid var(--pink-border); background: linear-gradient(135deg, var(--pink-bg) 0%, var(--amber-bg) 100%); color: var(--pink-text); font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; margin-bottom: 8px; transition: transform 0.12s, box-shadow 0.12s; }
+  .challenge-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(232, 160, 200, 0.3); }
+  .challenge-btn:active { transform: translateY(0); }
+  .challenge-link-box { padding: 0.7rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); font-size: 11px; color: var(--text-muted); word-break: break-all; text-align: center; margin-bottom: 8px; font-family: 'DM Mono', monospace; }
+  .challenge-link-box strong { color: var(--green-text); font-family: 'DM Sans', sans-serif; font-size: 12px; display: block; margin-bottom: 4px; }
+  .comparison-block { margin-bottom: 1.25rem; padding: 1rem; background: linear-gradient(145deg, var(--pink-bg) 0%, var(--amber-bg) 100%); border-radius: var(--radius-lg); border: 1px solid var(--pink-border); }
+  .comparison-title { font-family: 'DM Serif Display', serif; font-size: 18px; text-align: center; margin-bottom: 0.75rem; color: var(--text); }
+  .comparison-row { display: flex; gap: 10px; align-items: stretch; }
+  .comparison-side { flex: 1; text-align: center; padding: 0.7rem 0.5rem; background: rgba(255,255,255,0.55); border-radius: var(--radius); border: 2px solid transparent; transition: all 0.2s; }
+  .comparison-side.winner { background: var(--green-bg); border-color: var(--green-border); transform: scale(1.02); }
+  .comparison-side.loser { opacity: 0.7; }
+  .comparison-name { font-weight: 500; font-size: 13px; margin-bottom: 3px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .comparison-steps { font-family: 'DM Mono', monospace; font-size: 26px; font-weight: 500; margin-bottom: 2px; color: var(--text); }
+  .comparison-sublabel { font-size: 11px; color: var(--text-muted); }
+  .comparison-vs { font-family: 'DM Serif Display', serif; color: var(--text-hint); align-self: center; font-size: 14px; padding: 0 4px; }
 
   /* WORD DEFINITION POPUP */
   .wbadge, .cw .w, .optimal-word, .rc-chain-word, .rc-pair-word { cursor: help; transition: filter 0.1s; }
@@ -439,6 +467,8 @@
     </div>
     <div id="canvas-wrap"><canvas id="share-canvas"></canvas></div>
     <button class="new-puzzle-btn" id="win-practice-btn" style="display:none;margin-bottom:8px;" onclick="document.getElementById('win-overlay').classList.remove('open');startPractice()">New practice puzzle</button>
+    <button class="challenge-btn" onclick="challengeFriend()">🎯 Challenge a friend to beat you</button>
+    <div class="challenge-link-box" id="challenge-link-box" style="display:none"></div>
     <button class="share-native-btn" onclick="shareResult()">📤 Share result</button>
     <button class="save-btn" onclick="saveImage()">Save image to share</button>
     <button class="copy-btn" onclick="copyText()">📋 Copy to clipboard</button>
@@ -462,6 +492,12 @@
 
 <div class="streak-bar" id="streak-bar"></div>
 
+<div class="challenge-banner" id="challenge-banner" style="display:none">
+  <span class="ch-icon">🎯</span>
+  <span class="ch-text" id="ch-text">Loading challenge…</span>
+  <button class="ch-close" onclick="dismissChallenge()" title="Dismiss">×</button>
+</div>
+
 <div class="custom-banner" id="custom-banner">🔗 Custom classroom puzzle</div>
 
 <div class="practice-banner" id="practice-banner">Practice mode — results don't count toward your streak &nbsp;·&nbsp; <button onclick="exitPractice()" style="background:none;border:none;color:var(--blue-text);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:underline;">exit</button></div>
@@ -469,7 +505,11 @@
 
 <div class="main-layout">
 <section class="leaderboard-section" id="leaderboard-section">
-  <p class="lb-intro">🏆 Today's leaderboards</p>
+  <p class="lb-intro">🏆 Leaderboards</p>
+  <div class="lb-period-toggle">
+    <button class="lb-period-btn active" data-period="daily" onclick="setBoardPeriod('daily')">Today</button>
+    <button class="lb-period-btn" data-period="weekly" onclick="setBoardPeriod('weekly')">This week</button>
+  </div>
   <div class="lb-you-banner" id="lb-you-banner"></div>
   <div class="lb-grid">
     <div class="lb-card">
@@ -658,6 +698,123 @@ const SUPABASE_KEY = 'sb_publishable_A_ONpPPq6WKhGZ8HnUJZ4g_1pA2UKsR';
 const sb = (window.supabase && window.supabase.createClient)
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
   : null;
+
+// ── CHALLENGE A FRIEND ─────────────────────────────────────────
+let incomingChallenge = null;
+
+function parseChallengeParam(){
+  try {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('c') || '';
+  } catch(e){ return ''; }
+}
+
+async function loadIncomingChallenge(){
+  const id = parseChallengeParam();
+  if(!id || !sb) return null;
+  try {
+    const {data, error} = await sb.from('leaderboard_entries')
+      .select('id, nickname, puzzle_date, level, steps, hints_used, stars, school_name')
+      .eq('id', id)
+      .single();
+    if(error || !data) return null;
+    data.outdated = (data.puzzle_date !== isoDate());
+    return data;
+  } catch(e){ return null; }
+}
+
+function showChallengeBanner(ch){
+  const banner = document.getElementById('challenge-banner');
+  const text = document.getElementById('ch-text');
+  if(!banner || !text || !ch) return;
+  if(ch.outdated){
+    text.innerHTML = 'Challenge from <strong>'+escHtml(ch.nickname)+'</strong> is from a previous day. Play today\'s puzzle and come back tomorrow!';
+  } else {
+    const lvlLabel = ch.level.charAt(0).toUpperCase() + ch.level.slice(1);
+    text.innerHTML = '<strong>'+escHtml(ch.nickname)+'</strong> challenged you on '+lvlLabel+'! They solved it in <strong>'+ch.steps+' steps</strong> with '+ch.stars+'★. Can you beat it?';
+  }
+  banner.style.display = 'flex';
+}
+
+function dismissChallenge(){
+  const banner = document.getElementById('challenge-banner');
+  if(banner) banner.style.display = 'none';
+}
+
+async function challengeFriend(){
+  const myId = getSubmittedRowId(level);
+  const box = document.getElementById('challenge-link-box');
+  if(!myId){
+    if(box){
+      box.innerHTML = '<strong>Claim your spot first</strong>Submit your nickname above, then tap this button again to generate your challenge link.';
+      box.style.display = 'block';
+    }
+    return;
+  }
+  const url = window.location.origin + window.location.pathname + '?c=' + myId;
+  const steps = chain.length-1+hintsUsed;
+  const shareText = 'I solved today\'s Word Chain in '+steps+' steps. Think you can beat me? ' + url;
+  try {
+    if(navigator.share){
+      navigator.share({text: shareText, url: url}).catch(()=>{});
+    }
+    await navigator.clipboard.writeText(url);
+    if(box){
+      box.innerHTML = '<strong>✓ Challenge link copied!</strong>'+escHtml(url);
+      box.style.display = 'block';
+    }
+  } catch(e){
+    if(box){
+      box.innerHTML = '<strong>Your challenge link (select + copy):</strong>'+escHtml(url);
+      box.style.display = 'block';
+    }
+  }
+}
+
+function showChallengeComparison(){
+  if(!incomingChallenge || practiceMode || !currentPuzzle) return;
+  const ch = incomingChallenge;
+  // Only compare if same puzzle (same date + level)
+  if(ch.puzzle_date !== isoDate() || ch.level !== level) return;
+  const modal = document.querySelector('#win-overlay .modal');
+  if(!modal) return;
+  // Remove any existing comparison to avoid duplicates
+  const existing = modal.querySelector('.comparison-block');
+  if(existing) existing.remove();
+  const mySteps = chain.length-1+hintsUsed;
+  let myStars; if(mySteps<=currentPuzzle.par-2)myStars=3; else if(mySteps<=currentPuzzle.par)myStars=2; else if(mySteps<=currentPuzzle.par+2)myStars=1; else myStars=0;
+  const myName = getSavedNickname() || 'You';
+  const myWon = mySteps < ch.steps || (mySteps === ch.steps && hintsUsed < ch.hints_used);
+  const chWon = ch.steps < mySteps || (ch.steps === mySteps && ch.hints_used < hintsUsed);
+  const tie = !myWon && !chWon;
+  const myCls = myWon ? 'winner' : (tie ? '' : 'loser');
+  const chCls = chWon ? 'winner' : (tie ? '' : 'loser');
+  const title = myWon ? '🏆 You beat them!' : chWon ? '💪 They got you — try again tomorrow' : '🤝 It\'s a tie!';
+  const starsStr = n => '★'.repeat(n||0) + '☆'.repeat(3-(n||0));
+  const html =
+    '<div class="comparison-block">'+
+      '<div class="comparison-title">'+title+'</div>'+
+      '<div class="comparison-row">'+
+        '<div class="comparison-side '+myCls+'">'+
+          '<div class="comparison-name">'+escHtml(myName)+'</div>'+
+          '<div class="comparison-steps">'+mySteps+'</div>'+
+          '<div class="comparison-sublabel">'+starsStr(myStars)+(hintsUsed?' · '+hintsUsed+' hint'+(hintsUsed===1?'':'s'):'')+'</div>'+
+        '</div>'+
+        '<div class="comparison-vs">vs</div>'+
+        '<div class="comparison-side '+chCls+'">'+
+          '<div class="comparison-name">'+escHtml(ch.nickname)+'</div>'+
+          '<div class="comparison-steps">'+ch.steps+'</div>'+
+          '<div class="comparison-sublabel">'+starsStr(ch.stars)+(ch.hints_used?' · '+ch.hints_used+' hint'+(ch.hints_used===1?'':'s'):'')+'</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  const msg = document.getElementById('win-modal-msg');
+  if(msg){
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = html;
+    msg.insertAdjacentElement('afterend', wrapper.firstChild);
+  }
+}
 
 // ── WORD DEFINITIONS (tap any word to see meaning) ─────────────
 const _defCache = new Map();
@@ -944,29 +1101,121 @@ function escHtml(s){return String(s||'').replace(/[&<>"']/g,ch=>({"&":"&amp;","<
 
 let lbPlayersExpanded = false;
 let lbSchoolsExpanded = false;
+let currentPeriod = 'daily';  // 'daily' | 'weekly'
+
+function getWeekRange(){
+  // ISO-style week: Monday to Sunday, based on local date
+  const d = new Date();
+  const day = d.getDay();  // 0=Sun, 1=Mon ... 6=Sat
+  const mondayOffset = day === 0 ? -6 : 1 - day;
+  const monday = new Date(d);
+  monday.setDate(d.getDate() + mondayOffset);
+  monday.setHours(0,0,0,0);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  const fmt = { day:'numeric', month:'short' };
+  return {
+    start: isoDate(monday),
+    end: isoDate(sunday),
+    label: monday.toLocaleDateString('en-GB', fmt) + ' – ' + sunday.toLocaleDateString('en-GB', fmt)
+  };
+}
+
+async function fetchTopPlayersWeekly(limit){
+  if(!sb) return [];
+  const w = getWeekRange();
+  try {
+    const {data, error} = await sb.from('leaderboard_entries')
+      .select('nickname, stars, steps, school_name, level, puzzle_date')
+      .gte('puzzle_date', w.start)
+      .lte('puzzle_date', w.end);
+    if(error){ console.warn('weekly players fetch', error); return []; }
+    const map = new Map();
+    (data||[]).forEach(e => {
+      if(!e.nickname) return;
+      if(!map.has(e.nickname)) map.set(e.nickname, {nickname:e.nickname, total_stars:0, total_steps:0, plays:0, schools:new Set()});
+      const g = map.get(e.nickname);
+      g.total_stars += (e.stars||0);
+      g.total_steps += (e.steps||0);
+      g.plays += 1;
+      if(e.school_name) g.schools.add(e.school_name);
+    });
+    return Array.from(map.values())
+      .map(g => ({...g, schools_count: g.schools.size, school_name: g.schools.size>0 ? Array.from(g.schools)[0] : null}))
+      .sort((a,b) => b.total_stars - a.total_stars || b.plays - a.plays || a.total_steps - b.total_steps)
+      .slice(0, limit || 50);
+  } catch(e){ console.warn('weekly players threw', e); return []; }
+}
+
+async function fetchTopSchoolsWeekly(limit){
+  if(!sb) return [];
+  const w = getWeekRange();
+  try {
+    const {data, error} = await sb.from('leaderboard_entries')
+      .select('school_name, stars, steps, nickname, puzzle_date')
+      .gte('puzzle_date', w.start)
+      .lte('puzzle_date', w.end)
+      .not('school_name','is',null);
+    if(error){ console.warn('weekly schools fetch', error); return []; }
+    const map = new Map();
+    (data||[]).forEach(e => {
+      const k = (e.school_name||'').trim();
+      if(!k) return;
+      if(!map.has(k)) map.set(k, {school_name:k, total_stars:0, players:new Set(), plays:0});
+      const g = map.get(k);
+      g.total_stars += (e.stars||0);
+      g.plays += 1;
+      if(e.nickname) g.players.add(e.nickname);
+    });
+    return Array.from(map.values())
+      .map(g => ({school_name:g.school_name, total_stars:g.total_stars, players:g.players.size, plays:g.plays}))
+      .sort((a,b) => b.total_stars - a.total_stars || b.plays - a.plays)
+      .slice(0, limit || 50);
+  } catch(e){ console.warn('weekly schools threw', e); return []; }
+}
+
+function setBoardPeriod(p){
+  if(p !== 'daily' && p !== 'weekly') return;
+  currentPeriod = p;
+  document.querySelectorAll('.lb-period-btn').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('data-period') === p);
+  });
+  const dayLabel = p === 'weekly' ? getWeekRange().label : 'Today';
+  const dPlayers = document.getElementById('lb-date-players');
+  const dSchools = document.getElementById('lb-date-schools');
+  if(dPlayers) dPlayers.textContent = dayLabel;
+  if(dSchools) dSchools.textContent = dayLabel;
+  renderLeaderboards();
+}
 
 async function renderPlayersBoard(){
   const el = document.getElementById('lb-players');
   if(!el)return;
   const limit = lbPlayersExpanded ? 50 : 10;
-  const rows = await fetchTopPlayers(limit);
+  const rows = currentPeriod === 'weekly'
+    ? await fetchTopPlayersWeekly(limit)
+    : await fetchTopPlayers(limit);
   const myId = getSubmittedRowId('easy')||getSubmittedRowId('medium')||getSubmittedRowId('hard');
+  const myNick = getSavedNickname();
   if(!rows.length){
-    el.innerHTML = '<li class="lb-empty">Be the first to solve today!</li>';
+    el.innerHTML = '<li class="lb-empty">'+(currentPeriod==='weekly'?'No entries this week yet — play any day to join.':'Be the first to solve today!')+'</li>';
     document.getElementById('lb-players-more').style.display = 'none';
     return;
   }
   const medals = ['🥇','🥈','🥉'];
   const medalCls = ['gold','silver','bronze'];
   el.innerHTML = rows.map((r,i)=>{
-    const isMe = r.id===myId;
-    const score = r.steps+' steps · '+r.stars+'★';
+    const isMe = currentPeriod === 'weekly' ? (r.nickname === myNick) : (r.id===myId);
+    const score = currentPeriod === 'weekly'
+      ? r.total_stars+'★ · '+r.plays+' play'+(r.plays===1?'':'s')
+      : r.steps+' steps · '+r.stars+'★';
+    const nameExtra = currentPeriod === 'weekly' ? '' : levelDot(r.level);
     const rankHtml = i<3
       ? '<span class="lb-rank medal '+medalCls[i]+'">'+medals[i]+'</span>'
       : '<span class="lb-rank">'+(i+1)+'.</span>';
     return '<li'+(isMe?' class="is-you"':'')+'>'+
       rankHtml+
-      '<span class="lb-name">'+escHtml(r.nickname)+levelDot(r.level)+'</span>'+
+      '<span class="lb-name">'+escHtml(r.nickname)+nameExtra+'</span>'+
       '<span class="lb-score">'+score+'</span>'+
     '</li>';
   }).join('');
@@ -979,9 +1228,11 @@ async function renderSchoolsBoard(){
   const el = document.getElementById('lb-schools');
   if(!el)return;
   const limit = lbSchoolsExpanded ? 50 : 10;
-  const rows = await fetchTopSchools(limit);
+  const rows = currentPeriod === 'weekly'
+    ? await fetchTopSchoolsWeekly(limit)
+    : await fetchTopSchools(limit);
   if(!rows.length){
-    el.innerHTML = '<li class="lb-empty">No schools yet — teachers, add your school name when you solve today\'s puzzle!</li>';
+    el.innerHTML = '<li class="lb-empty">No schools yet — teachers, add your school name when students solve!</li>';
     document.getElementById('lb-schools-more').style.display = 'none';
     return;
   }
@@ -1322,6 +1573,11 @@ function showWinModal(steps,par,stats){
   document.getElementById('rc-streak').textContent=!practiceMode&&currentStreak.count>=2?'🔥 '+currentStreak.count+' day streak':'';
   document.getElementById('result-card').className='result-card '+level;
   document.getElementById('share-copied').textContent='';
+  // Hide any old challenge link box from a previous solve
+  const chLinkBox = document.getElementById('challenge-link-box');
+  if(chLinkBox){ chLinkBox.style.display='none'; chLinkBox.innerHTML=''; }
+  // Show head-to-head comparison if this solve was against an incoming challenge
+  if(typeof showChallengeComparison === 'function') showChallengeComparison();
   prepNicknameCapture();
   document.getElementById('win-overlay').classList.add('open');
   document.getElementById('win-practice-btn').style.display=practiceMode?'block':'none';
@@ -1579,7 +1835,18 @@ function copyEslLink(){
 }
 
 // ── PAGE INIT ──────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', async function(){
+  // Incoming challenge? Load it before the puzzle so we can auto-select the right level
+  try {
+    if(typeof loadIncomingChallenge === 'function'){
+      const ch = await loadIncomingChallenge();
+      if(ch){
+        incomingChallenge = ch;
+        showChallengeBanner(ch);
+        if(!ch.outdated && ch.level){ level = ch.level; }
+      }
+    }
+  } catch(e){}
   // Custom puzzle from URL? Otherwise load daily.
   const customPuzzle = typeof parseUrlPuzzle === 'function' ? parseUrlPuzzle() : null;
   if (customPuzzle && typeof loadCustomPuzzle === 'function') {
