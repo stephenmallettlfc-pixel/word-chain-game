@@ -377,6 +377,46 @@
   .def-loading { color: var(--text-muted); font-style: italic; font-size: 13px; }
   .def-error { color: var(--text-muted); font-size: 12px; font-style: italic; }
 
+  /* THREE-VIEW ARCHITECTURE */
+  .view { display: none; width: 100%; }
+  .view.active { display: block; animation: viewFade 0.25s ease-out; }
+  @keyframes viewFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .logo-link { text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px; }
+  .logo-link:hover .logo { color: var(--blue-text); }
+  .header-nav { display: flex; gap: 4px; margin-left: 1rem; }
+  .header-nav-link { padding: 6px 12px; border-radius: var(--radius); border: 1px solid transparent; background: transparent; color: var(--text-muted); font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; transition: all 0.12s; }
+  .header-nav-link:hover { background: var(--bg); color: var(--text); }
+  .header-nav-link.active { background: var(--blue-bg); color: var(--blue-text); border-color: var(--blue-border); }
+  @media (max-width: 720px) { .header-nav { gap: 2px; margin-left: 0.5rem; } .header-nav-link { padding: 6px 9px; font-size: 12px; } .logo-sub { display: none; } }
+  @media (max-width: 540px) { .header-nav-link { padding: 5px 7px; font-size: 11px; } }
+
+  /* LANDING HERO */
+  .landing-hero { text-align: center; padding: 3rem 1.5rem 1.5rem; max-width: 720px; margin: 0 auto; }
+  @media (max-width: 580px) { .landing-hero { padding-top: 2rem; } }
+  .landing-hero h1 { font-family: 'DM Serif Display', serif; font-size: 64px; letter-spacing: -2px; color: var(--text); margin-bottom: 0.75rem; line-height: 1; }
+  @media (max-width: 580px) { .landing-hero h1 { font-size: 44px; } }
+  .landing-hero .lh-tagline { font-size: 18px; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem; }
+  .landing-hero .lh-stats { font-size: 12px; color: var(--text-hint); letter-spacing: 0.04em; text-transform: uppercase; }
+  .landing-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; max-width: 920px; margin: 0 auto; padding: 0 1rem 3rem; }
+  .audience-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem 1.5rem 1.5rem; cursor: pointer; transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 8px; }
+  .audience-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+  .audience-play:hover { border-color: var(--amber-border); }
+  .audience-teachers:hover { border-color: var(--green-border); }
+  .audience-learn:hover { border-color: var(--blue-border); }
+  .ac-icon { font-size: 38px; margin-bottom: 6px; }
+  .ac-title { font-family: 'DM Serif Display', serif; font-size: 24px; line-height: 1.15; letter-spacing: -0.4px; }
+  .ac-desc { font-size: 14px; color: var(--text-muted); line-height: 1.55; flex: 1; min-height: 60px; }
+  .ac-cta { font-size: 14px; font-weight: 600; margin-top: 8px; }
+  .audience-play .ac-cta { color: var(--amber-text); }
+  .audience-teachers .ac-cta { color: var(--green-text); }
+  .audience-learn .ac-cta { color: var(--blue-text); }
+
+  /* VIEW INTROS (for non-landing views) */
+  .view-intro { text-align: center; padding: 1.5rem 1rem 0.5rem; max-width: 640px; margin: 0 auto; }
+  .view-intro h2 { font-family: 'DM Serif Display', serif; font-size: 30px; margin-bottom: 0.5rem; letter-spacing: -0.5px; color: var(--text); }
+  @media (max-width: 580px) { .view-intro h2 { font-size: 24px; } }
+  .view-intro p { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
+
   /* WIN CELEBRATION ANIMATIONS */
   @keyframes winPop { 0% { transform: scale(0.7); opacity: 0; } 60% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
   @keyframes starsPop { 0% { transform: scale(0.5) rotate(-8deg); opacity: 0; letter-spacing: 0; } 60% { transform: scale(1.15) rotate(4deg); opacity: 1; letter-spacing: 4px; } 100% { transform: scale(1) rotate(0); opacity: 1; letter-spacing: 3px; } }
@@ -478,13 +518,19 @@
 
 
 <header>
-  <span class="logo">Word Chain</span>
-  <span class="logo-sub">Daily puzzle</span>
+  <a href="#" class="logo-link" onclick="navigate('landing'); return false;">
+    <span class="logo">Word Chain</span>
+    <span class="logo-sub">Daily puzzle</span>
+  </a>
+  <nav class="header-nav">
+    <a href="#play" class="header-nav-link" data-nav="play">Play</a>
+    <a href="#teachers" class="header-nav-link" data-nav="teachers">Teachers</a>
+    <a href="#learn" class="header-nav-link" data-nav="learn">Learn English</a>
+  </nav>
   <div class="header-btns">
     <button class="sound-btn" id="sound-btn" onclick="toggleSound()" title="Toggle sound">🔊</button>
-    <button class="for-teachers-btn" onclick="document.getElementById('teachers-section').scrollIntoView({behavior:'smooth'})">For Teachers</button>
-    <button class="practice-btn" onclick="startPractice()">Practice</button>
-    <button class="print-btn" onclick="printPuzzle()">Print puzzle</button>
+    <button class="practice-btn" onclick="navigate('play');startPractice()">Practice</button>
+    <button class="print-btn" onclick="navigate('play');printPuzzle()">Print puzzle</button>
     <button class="help-btn" onclick="openHelp()">How to play</button>
   </div>
 </header>
@@ -503,6 +549,38 @@
 <div class="practice-banner" id="practice-banner">Practice mode — results don't count toward your streak &nbsp;·&nbsp; <button onclick="exitPractice()" style="background:none;border:none;color:var(--blue-text);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:underline;">exit</button></div>
 
 
+<!-- ── LANDING VIEW ───────────────────────────────────────────── -->
+<div class="view view-landing" data-view="landing">
+  <div class="landing-hero">
+    <h1>Word Chain</h1>
+    <p class="lh-tagline">A free daily word-ladder puzzle for primary, secondary and English-language learners.</p>
+    <p class="lh-stats">Three difficulty levels · Live leaderboards · No login</p>
+  </div>
+  <div class="landing-cards">
+    <a href="#play" class="audience-card audience-play" onclick="navigate('play'); return false;">
+      <div class="ac-icon">🎯</div>
+      <div class="ac-title">Play today's puzzle</div>
+      <div class="ac-desc">Three difficulty levels. Live leaderboards. Challenge a friend. Daily streak. Solve in three minutes.</div>
+      <div class="ac-cta">Start playing →</div>
+    </a>
+    <a href="#teachers" class="audience-card audience-teachers" onclick="navigate('teachers'); return false;">
+      <div class="ac-icon">🎓</div>
+      <div class="ac-title">For teachers</div>
+      <div class="ac-desc">Free classroom mode for KS2, KS3, KS4 and SEN. Custom puzzles from your vocabulary lists. Live school leaderboards.</div>
+      <div class="ac-cta">Set up your class →</div>
+    </a>
+    <a href="#learn" class="audience-card audience-learn" onclick="navigate('learn'); return false;">
+      <div class="ac-icon">📚</div>
+      <div class="ac-title">Learn English</div>
+      <div class="ac-desc">Vocabulary builder for ESL and EFL learners. Definitions on tap. Practice mode unlimited. A1 to B2 levels.</div>
+      <div class="ac-cta">Start learning →</div>
+    </a>
+  </div>
+</div>
+
+
+<!-- ── PLAY VIEW (puzzle + leaderboards) ──────────────────────── -->
+<div class="view view-play" data-view="play">
 <div class="main-layout">
 <section class="leaderboard-section" id="leaderboard-section">
   <p class="lb-intro">🏆 Leaderboards</p>
@@ -596,8 +674,15 @@
   </div>
 </div>
 </div>
+</div>
 
 
+<!-- ── TEACHERS VIEW ──────────────────────────────────────────── -->
+<div class="view view-teachers" data-view="teachers">
+<div class="view-intro">
+  <h2>Word Chain for Teachers</h2>
+  <p>Free, no logins for students, works on any device. Classroom mode, custom puzzles from your own vocabulary lists, printable PDFs, and live school leaderboards. Suitable for KS2, KS3, KS4, and SEN/intervention groups.</p>
+</div>
 <section class="teachers-section" id="teachers-section">
   <div class="teachers-card">
     <div class="teachers-header">
@@ -648,6 +733,16 @@
   </div>
 </section>
 
+</div>
+
+
+<!-- ── LEARN VIEW (ESL / vocabulary) ──────────────────────────── -->
+<div class="view view-learn" data-view="learn">
+<div class="view-intro">
+  <h2>Learn English with Word Chain</h2>
+  <p>Word Chain is a quiet, daily way to build English vocabulary. Tap any word in any puzzle to see its meaning. Use practice mode for unlimited puzzles at your own pace. Suitable for A1 to B2 learners — start with 3-letter Easy puzzles and work up.</p>
+  <p style="margin-top:0.75rem;font-size:13px;"><a href="#play" onclick="navigate('play'); return false;" style="color:var(--blue-text);text-decoration:underline;">→ Try today's puzzle</a></p>
+</div>
 <section class="esl-section" id="esl-section">
   <div class="esl-card">
     <div class="esl-header">
@@ -670,6 +765,9 @@
     <div class="esl-copied" id="esl-copied"></div>
   </div>
 </section>
+</div>
+
+
 <div class="print-layout" id="print-layout">
   <div class="pl-title">Word Chain</div>
   <div class="pl-sub" id="pl-sub">Daily puzzle — wordchain-puzzle.com</div>
@@ -698,6 +796,55 @@ const SUPABASE_KEY = 'sb_publishable_A_ONpPPq6WKhGZ8HnUJZ4g_1pA2UKsR';
 const sb = (window.supabase && window.supabase.createClient)
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
   : null;
+
+// ── VIEW ROUTING (landing / play / teachers / learn) ───────────
+const VALID_VIEWS = ['landing','play','teachers','learn'];
+let _currentView = null;
+
+function getViewFromHash(){
+  const hash = (window.location.hash || '').replace('#','').toLowerCase();
+  return VALID_VIEWS.indexOf(hash) >= 0 ? hash : 'landing';
+}
+
+function isReturningUser(){
+  try {
+    return !!localStorage.getItem('wc_nick') ||
+           !!localStorage.getItem('wc_streak') ||
+           !!localStorage.getItem('wc_stats');
+  } catch(e){ return false; }
+}
+
+function navigate(view){
+  if(VALID_VIEWS.indexOf(view) < 0) view = 'landing';
+  _currentView = view;
+  // Hide all views, show the chosen one
+  document.querySelectorAll('.view').forEach(v => {
+    v.classList.toggle('active', v.getAttribute('data-view') === view);
+  });
+  // Update nav highlighting
+  document.querySelectorAll('.header-nav-link').forEach(l => {
+    l.classList.toggle('active', l.getAttribute('data-nav') === view);
+  });
+  // Sync URL hash without firing hashchange (which would loop)
+  const targetHash = view === 'landing' ? '' : '#' + view;
+  if(window.location.hash !== targetHash){
+    if(targetHash){
+      history.replaceState(null, '', targetHash);
+    } else {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  }
+  // Refresh leaderboards when entering the play view
+  if(view === 'play' && typeof renderLeaderboards === 'function'){
+    renderLeaderboards();
+  }
+  // Scroll to top of content (not abrupt for landing)
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+window.addEventListener('hashchange', function(){
+  navigate(getViewFromHash());
+});
 
 // ── CHALLENGE A FRIEND ─────────────────────────────────────────
 let incomingChallenge = null;
@@ -1837,6 +1984,7 @@ function copyEslLink(){
 // ── PAGE INIT ──────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async function(){
   // Incoming challenge? Load it before the puzzle so we can auto-select the right level
+  let hasChallenge = false;
   try {
     if(typeof loadIncomingChallenge === 'function'){
       const ch = await loadIncomingChallenge();
@@ -1844,6 +1992,7 @@ document.addEventListener('DOMContentLoaded', async function(){
         incomingChallenge = ch;
         showChallengeBanner(ch);
         if(!ch.outdated && ch.level){ level = ch.level; }
+        hasChallenge = true;
       }
     }
   } catch(e){}
@@ -1860,6 +2009,22 @@ document.addEventListener('DOMContentLoaded', async function(){
   if (typeof updateSoundBtn === 'function') updateSoundBtn();
   // Render leaderboards
   if (typeof renderLeaderboards === 'function') renderLeaderboards();
+  // Determine initial view:
+  //  - challenge or custom puzzle URL → force play view
+  //  - explicit hash (#play/#teachers/#learn) → that view
+  //  - returning user (has saved nickname/streak/stats) → play
+  //  - otherwise → landing
+  let initialView;
+  if(hasChallenge || customPuzzle){
+    initialView = 'play';
+  } else if(window.location.hash){
+    initialView = getViewFromHash();
+  } else if(isReturningUser()){
+    initialView = 'play';
+  } else {
+    initialView = 'landing';
+  }
+  navigate(initialView);
 });
 </script>
 </body>
