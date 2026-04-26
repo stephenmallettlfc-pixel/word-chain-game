@@ -377,6 +377,52 @@
   .def-loading { color: var(--text-muted); font-style: italic; font-size: 13px; }
   .def-error { color: var(--text-muted); font-size: 12px; font-style: italic; }
 
+  /* AVATAR / PROFILE SYSTEM */
+  .wc-avatar { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid; flex-shrink: 0; line-height: 1; }
+  .wc-avatar-xs { width: 22px; height: 22px; font-size: 13px; border-width: 1.5px; }
+  .wc-avatar-sm { width: 28px; height: 28px; font-size: 16px; }
+  .wc-avatar-md { width: 38px; height: 38px; font-size: 22px; }
+  .wc-avatar-lg { width: 64px; height: 64px; font-size: 38px; border-width: 3px; }
+  .wc-avatar-xl { width: 88px; height: 88px; font-size: 52px; border-width: 3px; }
+  .av-amber { background: #fef3e2; border-color: #f5c842; }
+  .av-blue { background: #edf4ff; border-color: #91b8f5; }
+  .av-pink { background: #fdeef5; border-color: #e8a0c8; }
+  .av-green { background: #edf7ee; border-color: #7ecb84; }
+  .av-purple { background: #f3eaf9; border-color: #b491c8; }
+  .av-coral { background: #ffece8; border-color: #ff9f7a; }
+
+  .profile-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 0.9rem 1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; }
+  .profile-card .pc-meta { flex: 1; min-width: 0; }
+  .profile-card .pc-name { font-weight: 600; font-size: 14px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .profile-card .pc-level { font-size: 11px; color: var(--text-muted); margin-top: 2px; letter-spacing: 0.02em; }
+  .profile-card .pc-stats { font-size: 11px; color: var(--text-hint); margin-top: 4px; font-family: 'DM Mono', monospace; }
+  .profile-card .pc-edit { background: none; border: none; color: var(--text-hint); cursor: pointer; font-size: 14px; padding: 4px; }
+  .profile-card .pc-edit:hover { color: var(--text); }
+
+  .level-bar { width: 100%; height: 4px; background: var(--bg); border-radius: 2px; overflow: hidden; margin-top: 6px; }
+  .level-bar-fill { height: 100%; background: linear-gradient(90deg, #f5c842, #91b8f5); border-radius: 2px; transition: width 0.5s ease-out; }
+
+  /* AVATAR PICKER MODAL */
+  .ap-grid-section { margin-bottom: 1rem; }
+  .ap-section-label { font-size: 11px; color: var(--text-hint); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .ap-emoji-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; max-height: 200px; overflow-y: auto; padding: 4px; }
+  @media (max-width: 480px) { .ap-emoji-grid { grid-template-columns: repeat(7, 1fr); } }
+  .ap-emoji-btn { background: var(--bg); border: 2px solid transparent; border-radius: 8px; padding: 6px; font-size: 22px; cursor: pointer; line-height: 1; transition: transform 0.1s, border-color 0.1s; }
+  .ap-emoji-btn:hover { transform: scale(1.1); }
+  .ap-emoji-btn.selected { border-color: var(--blue-border); background: var(--blue-bg); transform: scale(1.05); }
+  .ap-color-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ap-color-btn { width: 40px; height: 40px; border-radius: 50%; border: 3px solid; cursor: pointer; transition: transform 0.1s; padding: 0; }
+  .ap-color-btn:hover { transform: scale(1.1); }
+  .ap-color-btn.selected { transform: scale(1.15); box-shadow: 0 0 0 3px white, 0 0 0 5px var(--blue-border); }
+  .ap-preview { display: flex; align-items: center; justify-content: center; padding: 1rem; background: var(--bg); border-radius: var(--radius-lg); margin-bottom: 1rem; }
+
+  /* Avatar inline with leaderboard entries */
+  .lb-list li { gap: 8px; }
+  .lb-list .wc-avatar { width: 24px; height: 24px; font-size: 14px; border-width: 1.5px; flex-shrink: 0; }
+
+  /* Avatar inline with comparison block */
+  .comparison-side .wc-avatar { margin: 0 auto 6px; }
+
   /* THREE-VIEW ARCHITECTURE */
   .view { display: none; width: 100%; }
   .view.active { display: block; animation: viewFade 0.25s ease-out; }
@@ -429,6 +475,25 @@
 <body>
 
 
+<!-- ── AVATAR PICKER MODAL ────────────────────────────────────── -->
+<div class="overlay" id="avatar-overlay" onclick="closeAvatarPicker(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAvatarPicker(true)">x</button>
+    <div class="modal-title">Choose your avatar</div>
+    <div class="ap-preview" id="ap-preview"></div>
+    <div class="ap-grid-section">
+      <div class="ap-section-label">Pick an icon</div>
+      <div class="ap-emoji-grid" id="ap-emoji-grid"></div>
+    </div>
+    <div class="ap-grid-section">
+      <div class="ap-section-label">Pick a colour</div>
+      <div class="ap-color-row" id="ap-color-row"></div>
+    </div>
+    <button class="got-it" onclick="saveAvatarPicker()">Save my avatar</button>
+  </div>
+</div>
+
+
 <div class="overlay" id="help-overlay" onclick="closeHelp(event)">
   <div class="modal">
     <button class="modal-close" onclick="closeHelpBtn()">x</button>
@@ -471,7 +536,11 @@
     <div class="nickname-capture" id="nickname-capture" style="display:none">
       <div class="nc-label">Claim your spot</div>
       <div class="nc-title" id="nc-title">Add yourself to today's leaderboard</div>
-      <div class="nc-sub" id="nc-sub">Enter a nickname — no account needed.</div>
+      <div class="nc-sub" id="nc-sub">Pick an avatar and a nickname — no account needed.</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <span id="nc-avatar-preview"></span>
+        <button class="nc-avatar-edit" type="button" onclick="openAvatarPicker()" style="flex:1;padding:8px 12px;border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;color:var(--text-muted);">Choose avatar →</button>
+      </div>
       <input class="nc-input" id="nc-nickname" placeholder="Your nickname (max 20 chars)" maxlength="20" autocomplete="off" />
       <input class="nc-input" id="nc-school" placeholder="School name (optional — adds you to the school board)" maxlength="80" autocomplete="off" />
       <button class="nc-submit-btn" id="nc-submit" onclick="onSubmitNickname()">Add me to the board</button>
@@ -583,6 +652,16 @@
 <div class="view view-play" data-view="play">
 <div class="main-layout">
 <section class="leaderboard-section" id="leaderboard-section">
+  <div class="profile-card" id="profile-card" style="display:none">
+    <div id="pc-avatar"></div>
+    <div class="pc-meta">
+      <div class="pc-name" id="pc-name">—</div>
+      <div class="pc-level" id="pc-level">—</div>
+      <div class="level-bar"><div class="level-bar-fill" id="pc-level-bar" style="width:0%"></div></div>
+      <div class="pc-stats" id="pc-stats">—</div>
+    </div>
+    <button class="pc-edit" onclick="openAvatarPicker()" title="Edit avatar">✎</button>
+  </div>
   <p class="lb-intro">🏆 Leaderboards</p>
   <div class="lb-period-toggle">
     <button class="lb-period-btn active" data-period="daily" onclick="setBoardPeriod('daily')">Today</button>
@@ -797,6 +876,127 @@ const sb = (window.supabase && window.supabase.createClient)
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
   : null;
 
+// ── AVATAR / PROFILE ───────────────────────────────────────────
+const AVATAR_EMOJIS = ['🐱','🐶','🦊','🐸','🐼','🐯','🐨','🐰','🐵','🦄','🐙','🐝','🦋','🐬','🦒','🐧','🦉','🦔','🐢','🐳','🌟','⭐','🌈','🌸','🌻','🌳','🍄','🌙','☀️','🪐','🎮','🎯','🎨','🎵','🚀','⚡','🔥','💎','🪄','🌶️'];
+const AVATAR_COLORS = ['amber','blue','pink','green','purple','coral'];
+
+function getAvatarEmoji(){ try { return localStorage.getItem('wc_avatar_emoji') || '🎯'; } catch(e){ return '🎯'; } }
+function setAvatarEmojiSt(e){ try { localStorage.setItem('wc_avatar_emoji', e); } catch(_){} }
+function getAvatarColor(){ try { return localStorage.getItem('wc_avatar_color') || 'blue'; } catch(e){ return 'blue'; } }
+function setAvatarColorSt(c){ try { localStorage.setItem('wc_avatar_color', c); } catch(_){} }
+function hasCustomAvatar(){ try { return !!localStorage.getItem('wc_avatar_emoji'); } catch(e){ return false; } }
+
+function avatarHTML(emoji, color, size){
+  emoji = emoji || '🎯';
+  color = AVATAR_COLORS.indexOf(color) >= 0 ? color : 'blue';
+  size = size || 'sm';
+  return '<span class="wc-avatar wc-avatar-'+size+' av-'+color+'">'+escHtml(emoji)+'</span>';
+}
+
+function calcLevel(totalStars){
+  totalStars = totalStars || 0;
+  if(totalStars >= 100) return {level:6, name:'Lexicon Legend', next:null, prev:100};
+  if(totalStars >= 50)  return {level:5, name:'Word Master',    next:100, prev:50};
+  if(totalStars >= 30)  return {level:4, name:'Vocabulary Hero',next:50,  prev:30};
+  if(totalStars >= 15)  return {level:3, name:'Letter Wizard',  next:30,  prev:15};
+  if(totalStars >= 5)   return {level:2, name:'Word Hunter',    next:15,  prev:5};
+  return {level:1, name:'Word Sprout', next:5, prev:0};
+}
+
+function renderProfileCard(){
+  const card = document.getElementById('profile-card');
+  if(!card) return;
+  const nick = getSavedNickname();
+  if(!nick){
+    // Hide if no nickname set yet
+    card.style.display = 'none';
+    return;
+  }
+  const stats = (typeof loadStats === 'function') ? loadStats() : {totalStars:0, wins:0};
+  const totalStars = stats.totalStars || 0;
+  const lvl = calcLevel(totalStars);
+  const streak = (typeof loadStreak === 'function') ? loadStreak() : {count:0};
+  document.getElementById('pc-avatar').innerHTML = avatarHTML(getAvatarEmoji(), getAvatarColor(), 'lg');
+  document.getElementById('pc-name').textContent = nick;
+  document.getElementById('pc-level').textContent = 'Level '+lvl.level+' · '+lvl.name;
+  // Progress bar
+  const barEl = document.getElementById('pc-level-bar');
+  if(lvl.next){
+    const pct = Math.max(0, Math.min(100, ((totalStars - lvl.prev) / (lvl.next - lvl.prev)) * 100));
+    barEl.style.width = pct + '%';
+  } else {
+    barEl.style.width = '100%';
+  }
+  const stsParts = [];
+  stsParts.push(totalStars+'★');
+  if(stats.wins) stsParts.push(stats.wins+' solved');
+  if(streak.count >= 2) stsParts.push('🔥 '+streak.count+'d');
+  document.getElementById('pc-stats').textContent = stsParts.join(' · ');
+  card.style.display = 'flex';
+}
+
+let _apTempEmoji = '🎯';
+let _apTempColor = 'blue';
+
+function buildAvatarPicker(){
+  const grid = document.getElementById('ap-emoji-grid');
+  if(!grid) return;
+  grid.innerHTML = AVATAR_EMOJIS.map(e =>
+    '<button class="ap-emoji-btn'+(e===_apTempEmoji?' selected':'')+'" data-emoji="'+escHtml(e)+'" onclick="apPickEmoji(this)">'+escHtml(e)+'</button>'
+  ).join('');
+  const colors = document.getElementById('ap-color-row');
+  colors.innerHTML = AVATAR_COLORS.map(c =>
+    '<button class="ap-color-btn av-'+c+(c===_apTempColor?' selected':'')+'" data-color="'+c+'" onclick="apPickColor(this)" title="'+c+'"></button>'
+  ).join('');
+  apUpdatePreview();
+}
+
+function apPickEmoji(btn){
+  _apTempEmoji = btn.getAttribute('data-emoji');
+  document.querySelectorAll('.ap-emoji-btn').forEach(b => b.classList.toggle('selected', b===btn));
+  apUpdatePreview();
+}
+
+function apPickColor(btn){
+  _apTempColor = btn.getAttribute('data-color');
+  document.querySelectorAll('.ap-color-btn').forEach(b => b.classList.toggle('selected', b===btn));
+  apUpdatePreview();
+}
+
+function apUpdatePreview(){
+  const p = document.getElementById('ap-preview');
+  if(p) p.innerHTML = avatarHTML(_apTempEmoji, _apTempColor, 'xl');
+}
+
+function openAvatarPicker(){
+  _apTempEmoji = getAvatarEmoji();
+  _apTempColor = getAvatarColor();
+  buildAvatarPicker();
+  document.getElementById('avatar-overlay').classList.add('open');
+}
+
+function closeAvatarPicker(force){
+  if(force === true){
+    document.getElementById('avatar-overlay').classList.remove('open');
+    return;
+  }
+  // Only close on outside-click events (event passed)
+  if(force && force.target === document.getElementById('avatar-overlay')){
+    document.getElementById('avatar-overlay').classList.remove('open');
+  }
+}
+
+function saveAvatarPicker(){
+  setAvatarEmojiSt(_apTempEmoji);
+  setAvatarColorSt(_apTempColor);
+  document.getElementById('avatar-overlay').classList.remove('open');
+  renderProfileCard();
+  // Re-render leaderboards so the user's new avatar shows up if they're on the board
+  if(typeof renderLeaderboards === 'function') renderLeaderboards();
+  // Update nickname-capture preview if it's open
+  if(typeof updateNcAvatarPreview === 'function') updateNcAvatarPreview();
+}
+
 // ── VIEW ROUTING (landing / play / teachers / learn) ───────────
 const VALID_VIEWS = ['landing','play','teachers','learn'];
 let _currentView = null;
@@ -861,7 +1061,7 @@ async function loadIncomingChallenge(){
   if(!id || !sb) return null;
   try {
     const {data, error} = await sb.from('leaderboard_entries')
-      .select('id, nickname, puzzle_date, level, steps, hints_used, stars, school_name')
+      .select('id, nickname, puzzle_date, level, steps, hints_used, stars, school_name, avatar_emoji, avatar_color')
       .eq('id', id)
       .single();
     if(error || !data) return null;
@@ -938,17 +1138,21 @@ function showChallengeComparison(){
   const chCls = chWon ? 'winner' : (tie ? '' : 'loser');
   const title = myWon ? '🏆 You beat them!' : chWon ? '💪 They got you — try again tomorrow' : '🤝 It\'s a tie!';
   const starsStr = n => '★'.repeat(n||0) + '☆'.repeat(3-(n||0));
+  const myAvatar = avatarHTML(getAvatarEmoji(), getAvatarColor(), 'lg');
+  const chAvatar = avatarHTML(ch.avatar_emoji||'🎯', ch.avatar_color||'blue', 'lg');
   const html =
     '<div class="comparison-block">'+
       '<div class="comparison-title">'+title+'</div>'+
       '<div class="comparison-row">'+
         '<div class="comparison-side '+myCls+'">'+
+          myAvatar+
           '<div class="comparison-name">'+escHtml(myName)+'</div>'+
           '<div class="comparison-steps">'+mySteps+'</div>'+
           '<div class="comparison-sublabel">'+starsStr(myStars)+(hintsUsed?' · '+hintsUsed+' hint'+(hintsUsed===1?'':'s'):'')+'</div>'+
         '</div>'+
         '<div class="comparison-vs">vs</div>'+
         '<div class="comparison-side '+chCls+'">'+
+          chAvatar+
           '<div class="comparison-name">'+escHtml(ch.nickname)+'</div>'+
           '<div class="comparison-steps">'+ch.steps+'</div>'+
           '<div class="comparison-sublabel">'+starsStr(ch.stars)+(ch.hints_used?' · '+ch.hints_used+' hint'+(ch.hints_used===1?'':'s'):'')+'</div>'+
@@ -1188,7 +1392,9 @@ async function submitToLeaderboard(nickname, school){
     par: par,
     hints_used: hintsUsed,
     stars: stars,
-    school_name: school ? String(school).trim().substring(0,80) : null
+    school_name: school ? String(school).trim().substring(0,80) : null,
+    avatar_emoji: getAvatarEmoji(),
+    avatar_color: getAvatarColor()
   };
   if(!entry.nickname)return {error:'no_nickname'};
   try {
@@ -1207,7 +1413,7 @@ async function fetchTopPlayers(limit){
   limit = limit||10;
   try {
     const {data, error} = await sb.from('leaderboard_entries')
-      .select('id,nickname,level,steps,par,hints_used,stars,school_name,created_at')
+      .select('id,nickname,level,steps,par,hints_used,stars,school_name,created_at,avatar_emoji,avatar_color')
       .eq('puzzle_date', isoDate())
       .order('stars', {ascending:false})
       .order('steps', {ascending:true})
@@ -1273,19 +1479,21 @@ async function fetchTopPlayersWeekly(limit){
   const w = getWeekRange();
   try {
     const {data, error} = await sb.from('leaderboard_entries')
-      .select('nickname, stars, steps, school_name, level, puzzle_date')
+      .select('nickname, stars, steps, school_name, level, puzzle_date, avatar_emoji, avatar_color')
       .gte('puzzle_date', w.start)
       .lte('puzzle_date', w.end);
     if(error){ console.warn('weekly players fetch', error); return []; }
     const map = new Map();
     (data||[]).forEach(e => {
       if(!e.nickname) return;
-      if(!map.has(e.nickname)) map.set(e.nickname, {nickname:e.nickname, total_stars:0, total_steps:0, plays:0, schools:new Set()});
+      if(!map.has(e.nickname)) map.set(e.nickname, {nickname:e.nickname, total_stars:0, total_steps:0, plays:0, schools:new Set(), avatar_emoji:null, avatar_color:null});
       const g = map.get(e.nickname);
       g.total_stars += (e.stars||0);
       g.total_steps += (e.steps||0);
       g.plays += 1;
       if(e.school_name) g.schools.add(e.school_name);
+      if(e.avatar_emoji) g.avatar_emoji = e.avatar_emoji;
+      if(e.avatar_color) g.avatar_color = e.avatar_color;
     });
     return Array.from(map.values())
       .map(g => ({...g, schools_count: g.schools.size, school_name: g.schools.size>0 ? Array.from(g.schools)[0] : null}))
@@ -1360,8 +1568,10 @@ async function renderPlayersBoard(){
     const rankHtml = i<3
       ? '<span class="lb-rank medal '+medalCls[i]+'">'+medals[i]+'</span>'
       : '<span class="lb-rank">'+(i+1)+'.</span>';
+    const avatar = avatarHTML(r.avatar_emoji||'🎯', r.avatar_color||'blue', 'xs');
     return '<li'+(isMe?' class="is-you"':'')+'>'+
       rankHtml+
+      avatar+
       '<span class="lb-name">'+escHtml(r.nickname)+nameExtra+'</span>'+
       '<span class="lb-score">'+score+'</span>'+
     '</li>';
@@ -1459,8 +1669,14 @@ async function onSubmitNickname(){
   const sub = document.getElementById('nc-submitted');
   sub.innerHTML = '✓ On the board as <strong>'+escHtml(nick)+'</strong>'+(school?' — '+escHtml(school):'');
   sub.style.display = 'block';
-  // Refresh boards so the user sees their name appear
+  // Refresh boards + profile card
   renderLeaderboards();
+  renderProfileCard();
+}
+
+function updateNcAvatarPreview(){
+  const el = document.getElementById('nc-avatar-preview');
+  if(el) el.innerHTML = avatarHTML(getAvatarEmoji(), getAvatarColor(), 'md');
 }
 
 function prepNicknameCapture(){
@@ -1479,6 +1695,7 @@ function prepNicknameCapture(){
   document.getElementById('nc-nickname').value = getSavedNickname();
   document.getElementById('nc-school').value = getSavedSchool();
   document.getElementById('nc-msg').textContent = '';
+  updateNcAvatarPreview();
 }
 
 
@@ -1496,7 +1713,7 @@ function todayStr(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+
 function getDailyPuzzle(lvl){const puzzles=LEVELS[lvl].puzzles;const start=new Date('2026-04-01');const today=new Date();const days=Math.floor((today-start)/(1000*60*60*24));return puzzles[Math.abs(days)%puzzles.length];}
 function loadStats(){try{return JSON.parse(localStorage.getItem('wc_stats')||'{"total":0,"wins":0,"totalSteps":0,"totalPar":0,"easy":0,"medium":0,"hard":0}');}catch(e){return {total:0,wins:0,totalSteps:0,totalPar:0,easy:0,medium:0,hard:0};}}
 function saveStats(s){try{localStorage.setItem('wc_stats',JSON.stringify(s));}catch(e){}}
-function recordWin(lvl,steps,par){const s=loadStats();s.total=(s.total||0)+1;s.wins=(s.wins||0)+1;s.totalSteps=(s.totalSteps||0)+steps;s.totalPar=(s.totalPar||0)+par;s[lvl]=(s[lvl]||0)+1;saveStats(s);return s;}
+function recordWin(lvl,steps,par){const s=loadStats();s.total=(s.total||0)+1;s.wins=(s.wins||0)+1;s.totalSteps=(s.totalSteps||0)+steps;s.totalPar=(s.totalPar||0)+par;s[lvl]=(s[lvl]||0)+1;let st;if(steps<=par-2)st=3;else if(steps<=par)st=2;else if(steps<=par+2)st=1;else st=0;s.totalStars=(s.totalStars||0)+st;saveStats(s);return s;}
 function loadStreak(){try{const s=JSON.parse(localStorage.getItem('wc_streak')||'{}');return {count:s.count||0,last:s.last||'',best:s.best||0};}catch(e){return {count:0,last:'',best:0};}}
 function saveStreak(count,last,best){try{localStorage.setItem('wc_streak',JSON.stringify({count,last,best}));}catch(e){}}
 function updateStreak(){const today=todayStr();const s=loadStreak();const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);const yStr=yesterday.getFullYear()+'-'+(yesterday.getMonth()+1)+'-'+yesterday.getDate();let newCount=1;if(s.last===yStr)newCount=s.count+1;else if(s.last===today)newCount=s.count;const best=Math.max(newCount,s.best||0);saveStreak(newCount,today,best);return {count:newCount,best};}
@@ -2009,6 +2226,8 @@ document.addEventListener('DOMContentLoaded', async function(){
   if (typeof updateSoundBtn === 'function') updateSoundBtn();
   // Render leaderboards
   if (typeof renderLeaderboards === 'function') renderLeaderboards();
+  // Render profile card (visible if a nickname has been set previously)
+  if (typeof renderProfileCard === 'function') renderProfileCard();
   // Determine initial view:
   //  - challenge or custom puzzle URL → force play view
   //  - explicit hash (#play/#teachers/#learn) → that view
